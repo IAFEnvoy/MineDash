@@ -2,6 +2,7 @@ package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.render.DynamicItemRenderer;
 import com.iafenvoy.minedash.render.block.DefaultBackgroundBlockEntityRenderer;
+import com.iafenvoy.minedash.render.item.DefaultBackgroundBlockItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 public final class MDRenderers {
     @SubscribeEvent
     public static void registerDynamicItemRenderers(FMLClientSetupEvent event) {
-        DynamicItemRenderer.RENDERERS.put(MDBlocks.DEFAULT_BACKGROUND.asItem(), new DefaultBackgroundBlockEntityRenderer());
+        DynamicItemRenderer.RENDERERS.put(MDBlocks.DEFAULT_BACKGROUND.asItem(), new DefaultBackgroundBlockItemRenderer());
     }
 
     @SubscribeEvent
