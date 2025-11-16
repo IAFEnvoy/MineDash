@@ -12,28 +12,12 @@ public class SpriteShiftEntry {
         this.target = new StitchedSprite(targetTextureLocation);
     }
 
-    public ResourceLocation getOriginalResourceLocation() {
-        return this.original.getLocation();
-    }
-
-    public ResourceLocation getTargetResourceLocation() {
-        return this.target.getLocation();
-    }
-
     public TextureAtlasSprite getOriginal() {
         return this.original.get();
     }
 
     public TextureAtlasSprite getTarget() {
         return this.target.get();
-    }
-
-    public float getTargetU(float localU) {
-        return this.getTarget().getU(getUnInterpolatedU(this.getOriginal(), localU));
-    }
-
-    public float getTargetV(float localV) {
-        return this.getTarget().getV(getUnInterpolatedV(this.getOriginal(), localV));
     }
 
     /**

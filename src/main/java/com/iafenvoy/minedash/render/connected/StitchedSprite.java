@@ -17,15 +17,12 @@ import java.util.Map;
 @EventBusSubscriber(Dist.CLIENT)
 public class StitchedSprite {
     private static final Map<ResourceLocation, List<StitchedSprite>> ALL = new HashMap<>();
-
-    protected final ResourceLocation atlasLocation;
     protected final ResourceLocation location;
     protected TextureAtlasSprite sprite;
 
     public StitchedSprite(ResourceLocation atlas, ResourceLocation location) {
-        this.atlasLocation = atlas;
         this.location = location;
-        ALL.computeIfAbsent(this.atlasLocation, $ -> new ArrayList<>()).add(this);
+        ALL.computeIfAbsent(atlas, $ -> new ArrayList<>()).add(this);
     }
 
     public StitchedSprite(ResourceLocation location) {
@@ -45,10 +42,6 @@ public class StitchedSprite {
 
     protected void loadSprite(TextureAtlas atlas) {
         this.sprite = atlas.getSprite(this.location);
-    }
-
-    public ResourceLocation getAtlasLocation() {
-        return this.atlasLocation;
     }
 
     public ResourceLocation getLocation() {

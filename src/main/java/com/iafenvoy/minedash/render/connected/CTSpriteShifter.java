@@ -18,5 +18,4 @@ public class CTSpriteShifter {
         ENTRY_CACHE.put(key, entry);
         return entry;
     }
-
 }

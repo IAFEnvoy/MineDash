@@ -56,16 +56,12 @@ public class CTModel extends BakedModelWrapperWithData {
 
         for (int i = 0; i < quads.size(); i++) {
             BakedQuad quad = quads.get(i);
-
             int index = data.get(quad.getDirection());
-            if (index == -1)
-                continue;
+            if (index == -1) continue;
 
             CTSpriteShiftEntry spriteShift = this.behaviour.getShift(state, quad.getDirection(), quad.getSprite());
-            if (spriteShift == null)
-                continue;
-            if (quad.getSprite() != spriteShift.getOriginal())
-                continue;
+            if (spriteShift == null) continue;
+            if (quad.getSprite() != spriteShift.getOriginal()) continue;
 
             BakedQuad newQuad = BakedQuadHelper.clone(quad);
             int[] vertexData = newQuad.getVertices();
@@ -76,10 +72,8 @@ public class CTModel extends BakedModelWrapperWithData {
                 BakedQuadHelper.setU(vertexData, vertex, spriteShift.getTargetU(u, index));
                 BakedQuadHelper.setV(vertexData, vertex, spriteShift.getTargetV(v, index));
             }
-
             quads.set(i, newQuad);
         }
-
         return quads;
     }
 
@@ -99,5 +93,4 @@ public class CTModel extends BakedModelWrapperWithData {
             return this.indices[face.get3DDataValue()];
         }
     }
-
 }

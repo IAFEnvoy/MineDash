@@ -33,12 +33,4 @@ public class CTSpriteShiftEntry extends SpriteShiftEntry {
         float vOffset = (float) (index / this.type.getSheetSize());
         return this.getTarget().getV((getUnInterpolatedV(this.getOriginal(), localV) + vOffset) / ((float) this.type.getSheetSize()));
     }
-
-    // Confluence Custom Start
-    public float getSelectedTargetU(float localU, int index, int selected, int width) {
-        int sheetSize = this.type.getSheetSize();
-        int total = sheetSize * width;
-        float uOffset = (index % sheetSize) + (total - sheetSize) * selected;
-        return this.getTarget().getU((getUnInterpolatedU(this.getOriginal(), localU) + uOffset) / total);
-    }
 }
