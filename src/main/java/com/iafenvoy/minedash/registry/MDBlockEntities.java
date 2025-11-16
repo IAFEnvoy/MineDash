@@ -10,6 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("DataFlowIssue")
 public final class MDBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MineDash.MOD_ID);
 

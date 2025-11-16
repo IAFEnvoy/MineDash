@@ -1,6 +1,7 @@
 package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.item.block.ConnectedBlock;
 import com.iafenvoy.minedash.item.block.DefaultBackgroundBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -15,6 +16,7 @@ public final class MDBlocks {
     public static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(MineDash.MOD_ID);
 
     public static final DeferredBlock<DefaultBackgroundBlock> DEFAULT_BACKGROUND = register("default_background", () -> new DefaultBackgroundBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<ConnectedBlock> SQUARE = register("square", () -> new ConnectedBlock(BlockBehaviour.Properties.of()));
 
     public static <T extends Block> DeferredBlock<T> register(String id, Supplier<T> obj) {
         DeferredBlock<T> r = REGISTRY.register(id, obj);

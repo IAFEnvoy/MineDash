@@ -11,13 +11,16 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,5 +67,13 @@ public class DefaultBackgroundBlock extends BaseEntityBlock {
         if (params.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof DefaultBackgroundBlockEntity b)
             stack.set(MDDataComponents.TEXTURE, b.getTexture());
         return List.of(stack);
+    }
+
+    @Override
+    public @NotNull ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, LevelReader level, @NotNull BlockPos pos, @NotNull Player player) {
+        ItemStack stack = new ItemStack(this);
+        if (level.getBlockEntity(pos) instanceof DefaultBackgroundBlockEntity blockEntity)
+            blockEntity.saveToItem(stack, level.registryAccess());
+        return stack;
     }
 }

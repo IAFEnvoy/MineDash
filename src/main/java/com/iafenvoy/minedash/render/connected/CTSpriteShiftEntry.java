@@ -1,0 +1,44 @@
+package com.iafenvoy.minedash.render.connected;
+
+
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
+public class CTSpriteShiftEntry extends SpriteShiftEntry {
+    protected final CTType type;
+
+    public CTSpriteShiftEntry(CTType type) {
+        this.type = type;
+    }
+
+    public CTType getType() {
+        return this.type;
+    }
+
+    /**
+     * &#064;replaced  <code>(localU) * 16</code> to <code>localU</code>
+     *
+     * @see TextureAtlasSprite#getU(float)
+     */
+    public float getTargetU(float localU, int index) {
+        float uOffset = (float) (index % this.type.getSheetSize());
+        return this.getTarget().getU((getUnInterpolatedU(this.getOriginal(), localU) + uOffset) / ((float) this.type.getSheetSize()));
+    }
+
+    /**
+     * &#064;replaced  <code>(localV) * 16</code> to <code>localV</code>
+     *
+     * @see TextureAtlasSprite#getV(float)
+     */
+    public float getTargetV(float localV, int index) {
+        float vOffset = (float) (index / this.type.getSheetSize());
+        return this.getTarget().getV((getUnInterpolatedV(this.getOriginal(), localV) + vOffset) / ((float) this.type.getSheetSize()));
+    }
+
+    // Confluence Custom Start
+    public float getSelectedTargetU(float localU, int index, int selected, int width) {
+        int sheetSize = this.type.getSheetSize();
+        int total = sheetSize * width;
+        float uOffset = (index % sheetSize) + (total - sheetSize) * selected;
+        return this.getTarget().getU((getUnInterpolatedU(this.getOriginal(), localU) + uOffset) / total);
+    }
+}
