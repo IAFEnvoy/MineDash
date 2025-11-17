@@ -1,6 +1,7 @@
 package com.iafenvoy.minedash.render.block;
 
-import com.iafenvoy.minedash.item.block.SpikeBlock;
+import com.iafenvoy.minedash.api.Spike;
+import com.iafenvoy.minedash.item.block.AbstractSpikeBlock;
 import com.iafenvoy.minedash.item.block.entity.SpikeBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -15,24 +16,25 @@ public class SpikeBlockEntityRenderer implements BlockEntityRenderer<SpikeBlockE
     public void render(@NotNull SpikeBlockEntity blockEntity, float v, @NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, int i1) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(blockEntity.getBlockState().getOptionalValue(SpikeBlock.FACING).orElse(Direction.UP).getRotation());
+        poseStack.mulPose(blockEntity.getBlockState().getOptionalValue(AbstractSpikeBlock.FACING).orElse(Direction.UP).getRotation());
         poseStack.translate(-0.5, -0.5, -0.5);
-        vertexQuads(poseStack, multiBufferSource);
-        vertexBorders(poseStack, multiBufferSource);
+        float height = blockEntity.getBlockState().getBlock() instanceof Spike spike ? spike.getHeight() : 1;
+        vertexQuads(poseStack, multiBufferSource, height);
+        vertexBorders(poseStack, multiBufferSource, height);
         poseStack.popPose();
     }
 
-    private static void vertexQuads(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource) {
+    private static void vertexQuads(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, float height) {
         VertexConsumer consumer = multiBufferSource.getBuffer(RenderType.debugFilledBox());
         PoseStack.Pose pose = poseStack.last();
         vertexBlack(consumer, pose, 0, 0, 0);
-        vertexBlack(consumer, pose, 0.5f, 1, 0.5f);
+        vertexBlack(consumer, pose, 0.5f, height, 0.5f);
         vertexBlack(consumer, pose, 1, 0, 0);
-        vertexBlack(consumer, pose, 0.5f, 1, 0.5f);
+        vertexBlack(consumer, pose, 0.5f, height, 0.5f);
         vertexBlack(consumer, pose, 1, 0, 1);
-        vertexBlack(consumer, pose, 0.5f, 1, 0.5f);
+        vertexBlack(consumer, pose, 0.5f, height, 0.5f);
         vertexBlack(consumer, pose, 0, 0, 1);
-        vertexBlack(consumer, pose, 0.5f, 1, 0.5f);
+        vertexBlack(consumer, pose, 0.5f, height, 0.5f);
         vertexBlack(consumer, pose, 0, 0, 0);
         vertexBlack(consumer, pose, 1, 0, 0);
         vertexBlack(consumer, pose, 1, 0, 1);
@@ -40,17 +42,17 @@ public class SpikeBlockEntityRenderer implements BlockEntityRenderer<SpikeBlockE
         vertexBlack(consumer, pose, 0, 0, 0);
     }
 
-    private static void vertexBorders(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource) {
+    private static void vertexBorders(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, float height) {
         VertexConsumer consumer = multiBufferSource.getBuffer(RenderType.lineStrip());
         PoseStack.Pose pose = poseStack.last();
         vertexWhite(consumer, pose, 0, 0, 0);
-        vertexWhite(consumer, pose, 0.5f, 1, 0.5f);
+        vertexWhite(consumer, pose, 0.5f, height, 0.5f);
         vertexWhite(consumer, pose, 1, 0, 0);
-        vertexWhite(consumer, pose, 0.5f, 1, 0.5f);
+        vertexWhite(consumer, pose, 0.5f, height, 0.5f);
         vertexWhite(consumer, pose, 1, 0, 1);
-        vertexWhite(consumer, pose, 0.5f, 1, 0.5f);
+        vertexWhite(consumer, pose, 0.5f, height, 0.5f);
         vertexWhite(consumer, pose, 0, 0, 1);
-        vertexWhite(consumer, pose, 0.5f, 1, 0.5f);
+        vertexWhite(consumer, pose, 0.5f, height, 0.5f);
         vertexWhite(consumer, pose, 0, 0, 0);
         vertexWhite(consumer, pose, 1, 0, 0);
         vertexWhite(consumer, pose, 1, 0, 1);

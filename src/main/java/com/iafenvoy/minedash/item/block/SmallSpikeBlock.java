@@ -9,21 +9,21 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class SpikeBlock extends AbstractSpikeBlock {
-    private static final MapCodec<SpikeBlock> CODEC = simpleCodec(SpikeBlock::new);
+public class SmallSpikeBlock extends AbstractSpikeBlock {
+    private static final MapCodec<SmallSpikeBlock> CODEC = simpleCodec(SmallSpikeBlock::new);
 
-    public SpikeBlock(Properties properties) {
+    public SmallSpikeBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
     @Override
     public float getHeight() {
-        return 1;
+        return 0.5f;
     }
 
     @Override
@@ -34,6 +34,6 @@ public class SpikeBlock extends AbstractSpikeBlock {
     @Override
     public VoxelShape getHitbox(BlockState state) {
         //FIXME::Rotate
-        return box(6, 6, 6, 10, 12, 10);
+        return box(6.4, 2.133, 6.4, 9.6, 5.333, 9.6);
     }
 }

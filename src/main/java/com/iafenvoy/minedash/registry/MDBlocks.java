@@ -1,9 +1,7 @@
 package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
-import com.iafenvoy.minedash.item.block.ConnectedBlock;
-import com.iafenvoy.minedash.item.block.DefaultBackgroundBlock;
-import com.iafenvoy.minedash.item.block.SpikeBlock;
+import com.iafenvoy.minedash.item.block.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +19,8 @@ public final class MDBlocks {
     public static final DeferredBlock<ConnectedBlock> SQUARE_1 = register("square_1", () -> new ConnectedBlock(BlockBehaviour.Properties.of()));
     public static final DeferredBlock<ConnectedBlock> SQUARE_F = register("square_f", () -> new ConnectedBlock(BlockBehaviour.Properties.of()));
 
-    public static final DeferredBlock<SpikeBlock> SPIKE = register("spike", () -> new SpikeBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<AbstractSpikeBlock> SPIKE = register("spike", () -> new SpikeBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<AbstractSpikeBlock> SMALL_SPIKE = register("small_spike", () -> new SmallSpikeBlock(BlockBehaviour.Properties.of()));
 
     public static <T extends Block> DeferredBlock<T> register(String id, Supplier<T> obj) {
         DeferredBlock<T> r = REGISTRY.register(id, obj);

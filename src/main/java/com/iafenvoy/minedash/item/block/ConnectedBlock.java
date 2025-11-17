@@ -1,5 +1,7 @@
 package com.iafenvoy.minedash.item.block;
 
+import com.iafenvoy.minedash.api.HitboxProvider;
+import com.iafenvoy.minedash.api.HitboxType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -11,7 +13,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class ConnectedBlock extends TransparentBlock {
+public class ConnectedBlock extends TransparentBlock implements HitboxProvider {
     public ConnectedBlock(Properties properties) {
         super(properties);
     }
@@ -29,5 +31,15 @@ public class ConnectedBlock extends TransparentBlock {
     @Override
     protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         return Shapes.empty();
+    }
+
+    @Override
+    public HitboxType getHitboxType() {
+        return HitboxType.BLOCK;
+    }
+
+    @Override
+    public VoxelShape getHitbox(BlockState state) {
+        return Shapes.block();
     }
 }
