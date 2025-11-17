@@ -1,4 +1,4 @@
-package com.iafenvoy.minedash.render.shader;
+package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
-public final class ShaderInstances {
+public final class MDShaderInstances {
     @Nullable
     public static ShaderInstance DEFAULT_BACKGROUND;
 

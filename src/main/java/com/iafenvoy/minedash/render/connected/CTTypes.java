@@ -4,8 +4,8 @@ import com.iafenvoy.minedash.MineDash;
 import com.iafenvoy.minedash.render.connected.behaviour.ConnectedTextureBehaviour;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class AllCTTypes implements CTType {
-    public static final AllCTTypes OMNIDIRECTIONAL = new AllCTTypes("omnidirectional", 8, ConnectedTextureBehaviour.ContextRequirement.builder().all().build()) {
+public abstract class CTTypes implements CTType {
+    public static final CTTypes OMNIDIRECTIONAL = new CTTypes("omnidirectional", 8, ConnectedTextureBehaviour.ContextRequirement.builder().all().build()) {
         @Override
         public int getTextureIndex(ConnectedTextureBehaviour.CTContext context) {
             int tileX = 0, tileY = 0;
@@ -57,11 +57,10 @@ public abstract class AllCTTypes implements CTType {
     private final int sheetSize;
     private final ConnectedTextureBehaviour.ContextRequirement contextRequirement;
 
-    AllCTTypes(String name, int sheetSize, ConnectedTextureBehaviour.ContextRequirement contextRequirement) {
+    CTTypes(String name, int sheetSize, ConnectedTextureBehaviour.ContextRequirement contextRequirement) {
         this.id = ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, name);
         this.sheetSize = sheetSize;
         this.contextRequirement = contextRequirement;
-        CTTypeRegistry.register(this);
     }
 
     @Override
@@ -78,6 +77,4 @@ public abstract class AllCTTypes implements CTType {
     public ConnectedTextureBehaviour.ContextRequirement getContextRequirement() {
         return this.contextRequirement;
     }
-
-    public abstract int getTextureIndex(ConnectedTextureBehaviour.CTContext context);
 }

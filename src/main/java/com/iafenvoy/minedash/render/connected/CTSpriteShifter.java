@@ -10,9 +10,7 @@ public class CTSpriteShifter {
 
     public static CTSpriteShiftEntry getCT(CTType type, ResourceLocation blockTexture, ResourceLocation connectedTexture) {
         String key = blockTexture + "->" + connectedTexture + "+" + type.getId();
-        if (ENTRY_CACHE.containsKey(key)) {
-            return (CTSpriteShiftEntry) ENTRY_CACHE.get(key);
-        }
+        if (ENTRY_CACHE.containsKey(key)) return (CTSpriteShiftEntry) ENTRY_CACHE.get(key);
         CTSpriteShiftEntry entry = new CTSpriteShiftEntry(type);
         entry.set(blockTexture, connectedTexture);
         ENTRY_CACHE.put(key, entry);

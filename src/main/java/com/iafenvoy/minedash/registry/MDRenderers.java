@@ -2,6 +2,7 @@ package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.render.DynamicItemRenderer;
 import com.iafenvoy.minedash.render.block.DefaultBackgroundBlockEntityRenderer;
+import com.iafenvoy.minedash.render.block.SpikeBlockEntityRenderer;
 import com.iafenvoy.minedash.render.item.DefaultBackgroundBlockItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -21,5 +22,6 @@ public final class MDRenderers {
     @SubscribeEvent
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(MDBlockEntities.DEFAULT_BACKGROUND.get(), ctx -> new DefaultBackgroundBlockEntityRenderer());
+        event.registerBlockEntityRenderer(MDBlockEntities.SPIKE.get(), ctx -> new SpikeBlockEntityRenderer());
     }
 }

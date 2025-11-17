@@ -1,0 +1,9 @@
+
+{
+  "parent": "minecraft:block/cube_all",
+  "render_type": "translucent",
+  "textures": {
+    "all": "minedash:block/square_1",
+    "particle": "minedash:block/square_1"
+  }
+}

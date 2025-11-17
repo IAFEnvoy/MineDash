@@ -17,6 +17,9 @@ public final class MDCreativeTabs {
             .title(Component.translatable("itemGroup.%s.main".formatted(MineDash.MOD_ID)))
             .displayItems((params, output) -> {
                 output.acceptAll(DefaultBackgroundBlock.BUILTIN_STACKS.get());
+                output.accept(MDBlocks.SQUARE);
+                output.accept(MDBlocks.SQUARE_1);
+                output.accept(MDBlocks.SQUARE_F);
             }).build());
 
     public static <T extends CreativeModeTab> DeferredHolder<CreativeModeTab, T> register(String id, Supplier<T> obj) {

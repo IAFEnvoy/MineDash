@@ -22,7 +22,7 @@ public class StitchedSprite {
 
     public StitchedSprite(ResourceLocation atlas, ResourceLocation location) {
         this.location = location;
-        ALL.computeIfAbsent(atlas, $ -> new ArrayList<>()).add(this);
+        ALL.computeIfAbsent(atlas, rl -> new ArrayList<>()).add(this);
     }
 
     public StitchedSprite(ResourceLocation location) {
@@ -33,11 +33,9 @@ public class StitchedSprite {
     public static void onTextureStitchPost(TextureAtlasStitchedEvent event) {
         TextureAtlas atlas = event.getAtlas();
         List<StitchedSprite> sprites = ALL.get(atlas.location());
-        if (sprites != null) {
-            for (StitchedSprite sprite : sprites) {
+        if (sprites != null)
+            for (StitchedSprite sprite : sprites)
                 sprite.loadSprite(atlas);
-            }
-        }
     }
 
     protected void loadSprite(TextureAtlas atlas) {

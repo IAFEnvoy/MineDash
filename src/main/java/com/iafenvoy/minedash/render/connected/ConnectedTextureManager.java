@@ -22,8 +22,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(Dist.CLIENT)
-public class ModelSwapper {
-    private static final ModelSwapper MODEL_SWAPPER = new ModelSwapper();
+public class ConnectedTextureManager {
+    private static final ConnectedTextureManager MODEL_SWAPPER = new ConnectedTextureManager();
     protected CustomBlockModels customBlockModels = new CustomBlockModels();
 
     public CustomBlockModels getCustomBlockModels() {

@@ -1,6 +1,5 @@
 package com.iafenvoy.minedash.render.connected;
 
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class CTSpriteShiftEntry extends SpriteShiftEntry {

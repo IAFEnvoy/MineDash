@@ -1,8 +1,8 @@
 package com.iafenvoy.minedash.render.block;
 
 import com.iafenvoy.minedash.item.block.entity.DefaultBackgroundBlockEntity;
+import com.iafenvoy.minedash.registry.MDRenderTypes;
 import com.iafenvoy.minedash.render.ThemeColorManager;
-import com.iafenvoy.minedash.render.shader.BackgroundRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,7 +20,7 @@ public class DefaultBackgroundBlockEntityRenderer implements BlockEntityRenderer
         ResourceLocation texture = blockEntity.getTexture();
         if (texture == null) return;
         poseStack.pushPose();
-        this.renderCube(poseStack.last().pose(), multiBufferSource.getBuffer(BackgroundRenderTypes.background(texture)));
+        this.renderCube(poseStack.last().pose(), multiBufferSource.getBuffer(MDRenderTypes.background(texture)));
         poseStack.popPose();
     }
 

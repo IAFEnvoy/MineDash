@@ -1,4 +1,4 @@
-package com.iafenvoy.minedash.render.shader;
+package com.iafenvoy.minedash.registry;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -11,15 +11,15 @@ import net.neoforged.api.distmarker.OnlyIn;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
-public final class BackgroundRenderTypes {
-    public static final Function<ResourceLocation, RenderType> DEFAULT_BACKGROUND = texture -> RenderType.create("default_background",
+public final class MDRenderTypes {
+    private static final Function<ResourceLocation, RenderType> DEFAULT_BACKGROUND = texture -> RenderType.create("default_background",
             DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.QUADS,
             256,
             false,
             false,
             RenderType.CompositeState.builder()
-                    .setShaderState(new RenderType.ShaderStateShard(() -> ShaderInstances.DEFAULT_BACKGROUND))
+                    .setShaderState(new RenderType.ShaderStateShard(() -> MDShaderInstances.DEFAULT_BACKGROUND))
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
                             .add(texture, false, false)
                             .build())
