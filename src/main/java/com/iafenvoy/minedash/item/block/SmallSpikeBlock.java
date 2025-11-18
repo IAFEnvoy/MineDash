@@ -1,7 +1,9 @@
 package com.iafenvoy.minedash.item.block;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -9,15 +11,25 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class SmallSpikeBlock extends AbstractSpikeBlock {
     private static final MapCodec<SmallSpikeBlock> CODEC = simpleCodec(SmallSpikeBlock::new);
+    private static final Map<Direction, VoxelShape> HITBOXES = ImmutableMap.<Direction, VoxelShape>builder()
+            .put(Direction.UP, box(6.4, 2, 6.4, 9.6, 5.5, 9.6))
+            .put(Direction.DOWN, box(6.4, 10.5, 6.4, 9.6, 14, 9.6))
+            .put(Direction.EAST, box(2, 6.4, 6.4, 5.5, 9.6, 9.6))
+            .put(Direction.WEST, box(10.5, 6.4, 6.4, 14, 9.6, 9.6))
+            .put(Direction.SOUTH, box(6.4, 6.4, 2, 9.6, 9.6, 5.5))
+            .put(Direction.NORTH, box(6.4, 6.4, 10.5, 9.6, 9.6, 14))
+            .build();
 
     public SmallSpikeBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -32,8 +44,7 @@ public class SmallSpikeBlock extends AbstractSpikeBlock {
     }
 
     @Override
-    public VoxelShape getHitbox(BlockState state) {
-        //FIXME::Rotate
-        return box(6.4, 2.133, 6.4, 9.6, 5.333, 9.6);
+    public @NotNull VoxelShape getHitbox(BlockState state) {
+        return HITBOXES.get(state.getValue(FACING));
     }
 }

@@ -34,12 +34,12 @@ public class ConnectedBlock extends TransparentBlock implements HitboxProvider {
     }
 
     @Override
-    public HitboxType getHitboxType() {
+    public @NotNull HitboxType getHitboxType() {
         return HitboxType.BLOCK;
     }
 
     @Override
-    public VoxelShape getHitbox(BlockState state) {
+    public @NotNull VoxelShape getHitbox(BlockState state) {
         return Shapes.block();
     }
 }

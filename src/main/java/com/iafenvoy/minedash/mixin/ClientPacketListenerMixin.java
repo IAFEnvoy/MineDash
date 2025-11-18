@@ -1,6 +1,6 @@
 package com.iafenvoy.minedash.mixin;
 
-import com.iafenvoy.minedash.render.HitBoxRenderManager;
+import com.iafenvoy.minedash.render.HitBoxRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
@@ -23,16 +23,16 @@ public class ClientPacketListenerMixin {
 
     @Inject(method = "handleLevelChunkWithLight", at = @At(value = "TAIL"))
     private void onChunkData(ClientboundLevelChunkWithLightPacket packet, CallbackInfo ci) {
-        HitBoxRenderManager.onChunkData(this.level, packet.getX(), packet.getZ());
+        HitBoxRenderer.onChunkData(this.level, packet.getX(), packet.getZ());
     }
 
     @Inject(method = "handleForgetLevelChunk", at = @At("TAIL"))
     private void onUnloadChunk(ClientboundForgetLevelChunkPacket packet, CallbackInfo ci) {
-        HitBoxRenderManager.onChunkUnload(packet.pos());
+        HitBoxRenderer.onChunkUnload(packet.pos());
     }
 
     @Inject(method = "handleBlockUpdate", at = @At("TAIL"))
     private void onBlockUpdate(ClientboundBlockUpdatePacket packet, CallbackInfo ci) {
-        HitBoxRenderManager.onBlockUpdate(packet.getPos(), packet.getBlockState());
+        HitBoxRenderer.onBlockUpdate(packet.getPos(), packet.getBlockState());
     }
 }

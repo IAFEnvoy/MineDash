@@ -61,7 +61,7 @@ public abstract class AbstractSpikeBlock extends BaseEntityBlock implements Spik
     }
 
     @Override
-    public HitboxType getHitboxType() {
+    public @NotNull HitboxType getHitboxType() {
         return HitboxType.CRITICAL;
     }
 }
