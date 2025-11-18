@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
@@ -24,13 +25,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
 public final class HitBoxRenderer {
     private static final Map<ChunkPos, List<BlockPos>> CHUNK_DATA = new LinkedHashMap<>();
-    private static final Set<Entity> ENTITY_RENDER_QUEUE = new LinkedHashSet<>();
 
     public static void onChunkData(Level level, int chunkX, int chunkZ) {
         LevelChunk chunk = level.getChunk(chunkX, chunkZ);
@@ -56,11 +59,6 @@ public final class HitBoxRenderer {
         if (newState.getBlock() instanceof HitboxProvider) posList.add(pos);
     }
 
-    //FIXME::Queue from packet.
-    public static void queueEntityRender(Entity entity) {
-        ENTITY_RENDER_QUEUE.add(entity);
-    }
-
     public static List<BlockPos> collectForRender(ChunkPos pos, int chunkRange) {
         ImmutableList.Builder<BlockPos> builder = ImmutableList.builder();
         for (Map.Entry<ChunkPos, List<BlockPos>> entry : CHUNK_DATA.entrySet())
@@ -76,10 +74,12 @@ public final class HitBoxRenderer {
         assert player != null;
         PoseStack poseStack = event.getPoseStack();
         //TODO::Config
+        int chunkRange = 5;
         poseStack.pushPose();
         Vec3 cameraPos = event.getCamera().getPosition();
         poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        for (BlockPos pos : collectForRender(player.chunkPosition(), 5)) {
+        //Block
+        for (BlockPos pos : collectForRender(player.chunkPosition(), chunkRange)) {
             BlockState state = player.level().getBlockState(pos);
             if (state.getBlock() instanceof HitboxProvider provider) {
                 poseStack.pushPose();
@@ -88,14 +88,14 @@ public final class HitBoxRenderer {
                 poseStack.popPose();
             }
         }
-        for (Entity entity : ENTITY_RENDER_QUEUE)
+        //Entity
+        for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(chunkRange * 16, chunkRange * 16, chunkRange * 16)))
             if (entity instanceof HitboxProvider provider) {
                 poseStack.pushPose();
                 poseStack.translate(entity.getX() - 0.5, entity.getY(), entity.getZ() - 0.5);
                 renderHitBox(poseStack.last(), provider.getHitbox(Blocks.AIR.defaultBlockState()), provider.getHitboxType().getColor());
                 poseStack.popPose();
             }
-        ENTITY_RENDER_QUEUE.clear();
         poseStack.popPose();
     }
 

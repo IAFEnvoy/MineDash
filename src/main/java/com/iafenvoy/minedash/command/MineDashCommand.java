@@ -1,7 +1,7 @@
 package com.iafenvoy.minedash.command;
 
 import com.iafenvoy.minedash.MineDash;
-import com.iafenvoy.minedash.network.payload.ThemeColorChangePayload;
+import com.iafenvoy.minedash.network.payload.ThemeColorChangeS2CPayload;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -31,7 +31,7 @@ public final class MineDashCommand {
     public static int changeThemeColor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         float r = FloatArgumentType.getFloat(ctx, "r"), g = FloatArgumentType.getFloat(ctx, "g"), b = FloatArgumentType.getFloat(ctx, "b");
-        PacketDistributor.sendToPlayer(player, new ThemeColorChangePayload(r, g, b));
+        PacketDistributor.sendToPlayer(player, new ThemeColorChangeS2CPayload(r, g, b));
         return 1;
     }
 }

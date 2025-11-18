@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class MDEntities {
     public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(Registries.ENTITY_TYPE, MineDash.MOD_ID);
 
-    public static final DeferredHolder<EntityType<?>, EntityType<GamePlayEntity>> GAME_PLAY = register("game_play", GamePlayEntity::new, MobCategory.CREATURE, 64, 3, false, 1, 1);
+    public static final DeferredHolder<EntityType<?>, EntityType<GamePlayEntity>> GAME_PLAY = register("game_play", GamePlayEntity::new, MobCategory.CREATURE, 64, 3, false, 0.9f, 0.9f);
 
     public static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String id, EntityType.EntityFactory<T> constructor, MobCategory category, int trackingRange, int updateInterval, boolean fireImmune, float sizeX, float sizeY) {
         return REGISTRY.register(id, EntityBuildHelper.build(id, constructor, category, trackingRange, updateInterval, fireImmune, sizeX, sizeY));

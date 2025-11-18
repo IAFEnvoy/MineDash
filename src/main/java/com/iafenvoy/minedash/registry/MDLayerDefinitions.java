@@ -11,7 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber
+@EventBusSubscriber(Dist.CLIENT)
 public final class MDLayerDefinitions {
     public static final ModelLayerLocation GAME_PLAY = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "game_play"), "main");
 
