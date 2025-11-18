@@ -2,7 +2,7 @@ package com.iafenvoy.minedash.entity;
 
 import com.iafenvoy.minedash.api.HitboxProvider;
 import com.iafenvoy.minedash.api.HitboxType;
-import com.iafenvoy.minedash.network.ServerNetworkHandler;
+import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -50,7 +50,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         this.owner = player.getUUID();
-        ServerNetworkHandler.CONTROLLING.put(player.getUUID(), this.getUUID());
+        GamePlayPacketDistributor.bindEntity(player, this);
         return InteractionResult.sidedSuccess(player.level().isClientSide);
     }
 
@@ -86,8 +86,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         super.tick();
         Vec3 deltaMovement = this.getDeltaMovement();
         if (this.jump && this.onGround()) deltaMovement = deltaMovement.add(0, 0.67, 0);
-        if (this.left) deltaMovement = deltaMovement.with(Direction.Axis.Z, 0.33);
-        if (this.right) deltaMovement = deltaMovement.with(Direction.Axis.Z, -0.33);
+        if (this.left ^ this.right) deltaMovement = deltaMovement.with(Direction.Axis.Z, this.left ? 0.33 : -0.33);
+        else deltaMovement = deltaMovement.with(Direction.Axis.Z, 0);
         this.setDeltaMovement(deltaMovement);
     }
 

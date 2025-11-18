@@ -1,10 +1,12 @@
 package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
 import com.iafenvoy.minedash.network.payload.GamePlayControlC2SPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,7 +14,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,9 @@ public final class MDKeyMappings {
     }
 
     static {
-        new KeyBindingHolder(JUMP).registerPressCallback(b -> PacketDistributor.sendToServer(new GamePlayControlC2SPayload(GamePlayControlC2SPayload.ControlType.JUMP, b)));
-        new KeyBindingHolder(LEFT).registerPressCallback(b -> PacketDistributor.sendToServer(new GamePlayControlC2SPayload(GamePlayControlC2SPayload.ControlType.LEFT, b)));
-        new KeyBindingHolder(RIGHT).registerPressCallback(b -> PacketDistributor.sendToServer(new GamePlayControlC2SPayload(GamePlayControlC2SPayload.ControlType.RIGHT, b)));
+        new KeyBindingHolder(JUMP).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.JUMP, b));
+        new KeyBindingHolder(LEFT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.LEFT, b));
+        new KeyBindingHolder(RIGHT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.RIGHT, b));
     }
 
     //FIXME::Complex?
