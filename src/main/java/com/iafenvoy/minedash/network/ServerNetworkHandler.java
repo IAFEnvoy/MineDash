@@ -3,7 +3,6 @@ package com.iafenvoy.minedash.network;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 import com.iafenvoy.minedash.network.payload.GamePlayControlC2SPayload;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.LinkedHashMap;
@@ -21,11 +20,9 @@ public final class ServerNetworkHandler {
             return;
 
         switch (payload.controlType()) {
-            case JUMP -> {
-                if (entity.onGround()) entity.addDeltaMovement(new Vec3(0, 0.67, 0));
-            }
-            case LEFT -> entity.setDeltaMovement(entity.getDeltaMovement().x, entity.getDeltaMovement().y, 0.33);
-            case RIGHT -> entity.setDeltaMovement(entity.getDeltaMovement().x, entity.getDeltaMovement().y, -0.33);
+            case JUMP -> entity.setJump(payload.pressed());
+            case LEFT -> entity.setLeft(payload.pressed());
+            case RIGHT -> entity.setRight(payload.pressed());
         }
         entity.hurtMarked = true;
     }
