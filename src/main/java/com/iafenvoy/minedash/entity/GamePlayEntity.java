@@ -3,7 +3,9 @@ package com.iafenvoy.minedash.entity;
 import com.iafenvoy.minedash.api.HitboxProvider;
 import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
+import com.iafenvoy.minedash.data.PlayMode;
 import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
+import com.iafenvoy.minedash.registry.MDEntityDataSerializers;
 import com.iafenvoy.minedash.registry.MDItems;
 import com.iafenvoy.minedash.registry.MDSounds;
 import com.iafenvoy.minedash.util.MathUtil;
@@ -12,6 +14,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
@@ -35,6 +40,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider {
+    public static final EntityDataAccessor<PlayMode> PLAY_MODE = SynchedEntityData.defineId(GamePlayEntity.class, MDEntityDataSerializers.PLAY_MODE.get());
+    public static final EntityDataAccessor<Boolean> REVERSE_GRAVITY = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> REVERSE_CONTROL = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> SMALL = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
     @Nullable
     private UUID owner;
     private boolean jump, left, right, dead;
@@ -47,6 +56,35 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public static @NotNull AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes();
+    }
+
+    @Override
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PLAY_MODE, PlayMode.CUBE);
+        builder.define(REVERSE_GRAVITY, false);
+        builder.define(REVERSE_CONTROL, false);
+        builder.define(SMALL, false);
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.owner = tag.contains("Owner", Tag.TAG_INT_ARRAY) ? tag.getUUID("Owner") : null;
+        this.setPlayMode(tag.contains("PlayMode", Tag.TAG_STRING) ? PlayMode.valueOf(tag.getString("PlayMode")) : PlayMode.CUBE);
+        this.setReverseGravity(tag.getBoolean("ReverseGravity"));
+        this.setReverseControl(tag.getBoolean("ReverseControl"));
+        this.setSmall(tag.getBoolean("Small"));
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        if (this.owner != null) tag.putUUID("Owner", this.owner);
+        tag.putString("PlayMode", this.getPlayMode().name());
+        tag.putBoolean("ReverseGravity", this.isReverseGravity());
+        tag.putBoolean("ReverseControl", this.isReverseControl());
+        tag.putBoolean("Small", this.isSmall());
     }
 
     @Override
@@ -73,18 +111,6 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     @Override
     public @Nullable UUID getOwnerUUID() {
         return this.owner;
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.owner = tag.contains("Owner", Tag.TAG_INT_ARRAY) ? tag.getUUID("Owner") : null;
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        if (this.owner != null) tag.putUUID("Owner", this.owner);
     }
 
     @Override
@@ -154,5 +180,37 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public void setRight(boolean right) {
         this.right = right;
+    }
+
+    public PlayMode getPlayMode() {
+        return this.entityData.get(PLAY_MODE);
+    }
+
+    public void setPlayMode(PlayMode playMode) {
+        this.entityData.set(PLAY_MODE, playMode);
+    }
+
+    public boolean isReverseGravity() {
+        return this.entityData.get(REVERSE_GRAVITY);
+    }
+
+    public void setReverseGravity(boolean reverseGravity) {
+        this.entityData.set(REVERSE_GRAVITY, reverseGravity);
+    }
+
+    public boolean isReverseControl() {
+        return this.entityData.get(REVERSE_CONTROL);
+    }
+
+    public void setReverseControl(boolean reverseControl) {
+        this.entityData.set(REVERSE_CONTROL, reverseControl);
+    }
+
+    public boolean isSmall() {
+        return this.entityData.get(SMALL);
+    }
+
+    public void setSmall(boolean small) {
+        this.entityData.set(SMALL, small);
     }
 }

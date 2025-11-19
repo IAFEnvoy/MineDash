@@ -5,12 +5,16 @@
   "block.minedash.square": "Square",
   "block.minedash.square_1": "Square 1",
   "block.minedash.square_f": "Square F",
+  "category.minedash.general": "General",
   "category.minedash.main": "MineDash",
+  "config.minedash.general.hitboxDisplayRange": "Hitbox Display Range (Chunks)",
+  "config.minedash.general.showHitboxes": "Show Hitboxes",
   "entity.minedash.game_play": "Game Play",
   "item.minedash.delete_stick": "Delete Stick",
   "item.minedash.game_play_spawn_egg": "Game Play",
   "itemGroup.minedash.main": "MineDash",
   "key.minedash.jump": "Jump",
   "key.minedash.left": "Left",
-  "key.minedash.right": "Right"
+  "key.minedash.right": "Right",
+  "screen.minedash.client.title": "MineDash Client Config"
 }

@@ -2,6 +2,7 @@ package com.iafenvoy.minedash.render;
 
 import com.google.common.collect.ImmutableList;
 import com.iafenvoy.minedash.api.HitboxProvider;
+import com.iafenvoy.minedash.config.MDClientConfig;
 import com.iafenvoy.minedash.registry.MDRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -69,12 +70,13 @@ public final class HitBoxRenderer {
 
     @SubscribeEvent
     public static void renderHitBoxes(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES || !MDClientConfig.INSTANCE.general.showHitboxes.getValue())
+            return;
         LocalPlayer player = Minecraft.getInstance().player;
         assert player != null;
         PoseStack poseStack = event.getPoseStack();
         //TODO::Config
-        int chunkRange = 5;
+        int chunkRange = MDClientConfig.INSTANCE.general.hitboxDisplayRange.getValue();
         poseStack.pushPose();
         Vec3 cameraPos = event.getCamera().getPosition();
         poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
