@@ -39,7 +39,7 @@ public class ConnectedBlock extends TransparentBlock implements HitboxProvider {
     }
 
     @Override
-    public @NotNull VoxelShape getHitbox(BlockState state) {
+    public @NotNull VoxelShape getHitbox(@NotNull BlockState state) {
         return Shapes.block();
     }
 }

@@ -18,5 +18,6 @@ public final class MineDash {
         MDDataComponents.REGISTRY.register(bus);
         MDEntities.REGISTRY.register(bus);
         MDItems.REGISTRY.register(bus);
+        MDSounds.REGISTRY.register(bus);
     }
 }
