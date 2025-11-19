@@ -7,6 +7,8 @@
   "block.minedash.square_f": "Square F",
   "category.minedash.main": "MineDash",
   "entity.minedash.game_play": "Game Play",
+  "item.minedash.delete_stick": "Delete Stick",
+  "item.minedash.game_play_spawn_egg": "Game Play",
   "itemGroup.minedash.main": "MineDash",
   "key.minedash.jump": "Jump",
   "key.minedash.left": "Left",
