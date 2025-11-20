@@ -6,6 +6,7 @@ import com.iafenvoy.minedash.api.Interactable;
 import com.iafenvoy.minedash.data.ControlType;
 import com.iafenvoy.minedash.data.PlayMode;
 import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
+import com.iafenvoy.minedash.network.payload.GravityIndicatorS2CPayload;
 import com.iafenvoy.minedash.registry.MDEntityDataSerializers;
 import com.iafenvoy.minedash.registry.MDItems;
 import com.iafenvoy.minedash.util.FakeExplosionDamageCalculator;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,7 +26,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -33,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +53,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     private boolean jump, left, right, dead;
     @Nullable
     private BlockPos collidingPos = null;
+    private boolean collidingInteracted = false;
     private Direction direction = Direction.SOUTH;
 
     public GamePlayEntity(EntityType<? extends Mob> entityType, Level level) {
@@ -135,8 +141,10 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         VoxelShape entityShape = Shapes.create(this.getBoundingBox());
         if (this.collidingPos != null) {//Check if it's still colliding
             BlockState state = this.level().getBlockState(this.collidingPos);
-            if (!(state.getBlock() instanceof HitboxProvider provider) || !Shapes.joinIsNotEmpty(provider.getHitbox(state, this.collidingPos), entityShape, BooleanOp.AND))
+            if (!(state.getBlock() instanceof HitboxProvider provider) || !Shapes.joinIsNotEmpty(provider.getHitbox(state, this.collidingPos), entityShape, BooleanOp.AND)) {
                 this.collidingPos = null;
+                this.collidingInteracted = false;
+            }
         }
         final int checkRange = 3;
         for (int x = -checkRange; x <= checkRange; x++)
@@ -149,7 +157,10 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
                             case CRITICAL -> this.gameOver();
                             case INTERACTABLE -> {
                                 if (provider instanceof Interactable interactable) interactable.onCollision(this);
-                                if (this.collidingPos == null) this.collidingPos = pos;
+                                if (this.collidingPos == null) {
+                                    this.collidingPos = pos;
+                                    this.collidingInteracted = false;
+                                }
                             }
                         }
                 }
@@ -161,7 +172,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     }
 
     private double calculateVerticalMovement() {
-        return this.jump && this.onGround() ? 0.67 * (this.isReverseGravity() ? -1 : 1) : 0;
+        return this.jump && this.onGround() ? 0.67 * this.gravityFactor() : 0;
     }
 
     private Vec3 calculateHorizontalMovement(Vec3 original) {
@@ -187,8 +198,10 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         switch (controlType) {
             case JUMP -> {
                 this.jump = pressed;
-                if (this.collidingPos != null && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable)
+                if (this.collidingPos != null && !this.collidingInteracted && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable) {
+                    this.collidingInteracted = true;
                     interactable.onClick(this);
+                }
             }
             case LEFT -> this.left = pressed;
             case RIGHT -> this.right = pressed;
@@ -209,6 +222,18 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public void setReverseGravity(boolean reverseGravity) {
         this.entityData.set(REVERSE_GRAVITY, reverseGravity);
+        AttributeInstance attribute = this.getAttribute(Attributes.GRAVITY);
+        if (attribute != null) attribute.setBaseValue(0.08 * this.gravityFactor());
+        if (!this.level().isClientSide && this.getOwner() instanceof ServerPlayer player)
+            PacketDistributor.sendToPlayer(player, new GravityIndicatorS2CPayload(reverseGravity));
+    }
+
+    public void reverseGravity() {
+        this.setReverseGravity(!this.isReverseGravity());
+    }
+
+    public int gravityFactor() {
+        return this.isReverseGravity() ? -1 : 1;
     }
 
     public boolean isReverseControl() {

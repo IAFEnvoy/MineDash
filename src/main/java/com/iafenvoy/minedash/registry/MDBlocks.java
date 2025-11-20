@@ -22,6 +22,12 @@ public final class MDBlocks {
     public static final DeferredBlock<AbstractSpikeBlock> SPIKE = register("spike", () -> new SpikeBlock(BlockBehaviour.Properties.of()));
     public static final DeferredBlock<AbstractSpikeBlock> SMALL_SPIKE = register("small_spike", () -> new SmallSpikeBlock(BlockBehaviour.Properties.of()));
 
+    public static final DeferredBlock<JumpRingBlock> JUMP_RING = register("jump_ring", () -> new JumpRingBlock(0.67));
+    public static final DeferredBlock<JumpRingBlock> BIG_JUMP_RING = register("big_jump_ring", () -> new JumpRingBlock(0.85));
+    public static final DeferredBlock<JumpRingBlock> SMALL_JUMP_RING = register("small_jump_ring", () -> new JumpRingBlock(0.45));
+    public static final DeferredBlock<GravityRingBlock> GRAVITY_RING = register("gravity_ring", () -> new GravityRingBlock(true));
+    public static final DeferredBlock<GravityRingBlock> GRAVITY_JUMP_RING = register("gravity_jump_ring", () -> new GravityRingBlock(false));
+
     public static <T extends Block> DeferredBlock<T> register(String id, Supplier<T> obj) {
         DeferredBlock<T> r = REGISTRY.register(id, obj);
         MDItems.register(id, () -> new BlockItem(r.get(), new Item.Properties()));

@@ -25,6 +25,11 @@ public final class MDCreativeTabs {
                 output.accept(MDBlocks.SQUARE_F);
                 output.accept(MDBlocks.SPIKE);
                 output.accept(MDBlocks.SMALL_SPIKE);
+                output.accept(MDBlocks.JUMP_RING);
+                output.accept(MDBlocks.BIG_JUMP_RING);
+                output.accept(MDBlocks.SMALL_JUMP_RING);
+                output.accept(MDBlocks.GRAVITY_RING);
+                output.accept(MDBlocks.GRAVITY_JUMP_RING);
             }).build());
 
     public static <T extends CreativeModeTab> DeferredHolder<CreativeModeTab, T> register(String id, Supplier<T> obj) {

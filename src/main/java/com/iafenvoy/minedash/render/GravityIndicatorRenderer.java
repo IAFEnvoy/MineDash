@@ -42,7 +42,7 @@ public enum GravityIndicatorRenderer implements LayeredDraw.Layer {
     }
 
     private static class RenderInstance {
-        private static final int MOVE_RANGE = 8, MOVE_DELTA = 5, COUNT = 30;
+        private static final int MOVE_RANGE = 8, MOVE_DELTA = 10, COUNT = 30;
         private static final Random RANDOM = new Random();
         private final boolean reverse;
         private final List<SingleLine> points;

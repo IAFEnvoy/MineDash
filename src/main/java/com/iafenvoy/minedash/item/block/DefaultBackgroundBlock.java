@@ -32,7 +32,7 @@ public class DefaultBackgroundBlock extends BaseEntityBlock {
         ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
         for (int i = 1; i <= 7; i++) {
             ItemStack stack = MDBlocks.DEFAULT_BACKGROUND.toStack();
-            stack.set(MDDataComponents.TEXTURE, ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "textures/item/default_background_%s.png".formatted(i)));
+            stack.set(MDDataComponents.TEXTURE, ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "textures/item/background/default_background_%s.png".formatted(i)));
             builder.add(stack);
         }
         return builder.build();

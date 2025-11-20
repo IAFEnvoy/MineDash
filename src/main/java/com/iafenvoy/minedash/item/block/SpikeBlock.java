@@ -40,12 +40,12 @@ public class SpikeBlock extends AbstractSpikeBlock {
     }
 
     @Override
-    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return Shapes.empty();
+    public @NotNull VoxelShape getHitbox(@NotNull BlockState state) {
+        return HITBOXES.get(state.getValue(FACING));
     }
 
     @Override
-    public @NotNull VoxelShape getHitbox(@NotNull BlockState state) {
-        return HITBOXES.get(state.getValue(FACING));
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return Shapes.empty();
     }
 }

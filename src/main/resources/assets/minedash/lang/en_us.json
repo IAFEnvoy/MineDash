@@ -1,5 +1,10 @@
 {
+  "block.minedash.big_jump_ring": "Big Jump Ring",
   "block.minedash.default_background": "Default Background",
+  "block.minedash.gravity_jump_ring": "Gravity Jump Ring",
+  "block.minedash.gravity_ring": "Gravity Ring",
+  "block.minedash.jump_ring": "Jump Ring",
+  "block.minedash.small_jump_ring": "Small Jump Ring",
   "block.minedash.small_spike": "Small Spike",
   "block.minedash.spike": "Spike",
   "block.minedash.square": "Square",
