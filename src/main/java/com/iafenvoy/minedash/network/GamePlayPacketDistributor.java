@@ -1,5 +1,6 @@
 package com.iafenvoy.minedash.network;
 
+import com.iafenvoy.minedash.data.ControlType;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 import com.iafenvoy.minedash.network.payload.GamePlayControlC2SPayload;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -18,17 +19,12 @@ public final class GamePlayPacketDistributor {
         CONTROLLING.put(player.getUUID(), entity.getId());
     }
 
-    public static void runAction(@Nullable Player player, GamePlayControlC2SPayload.ControlType controlType, boolean pressed) {
+    public static void runAction(@Nullable Player player, ControlType controlType, boolean pressed) {
         if (player == null) return;
         UUID uuid = player.getUUID();
-        if (!CONTROLLING.containsKey(uuid)) return;
-        if (!(player.level().getEntity(CONTROLLING.getInt(uuid)) instanceof GamePlayEntity entity)) return;
-        switch (controlType) {
-            case JUMP -> entity.setJump(pressed);
-            case LEFT -> entity.setLeft(pressed);
-            case RIGHT -> entity.setRight(pressed);
-        }
-        entity.hurtMarked = true;
+        if (!CONTROLLING.containsKey(uuid) || !(player.level().getEntity(CONTROLLING.getInt(uuid)) instanceof GamePlayEntity entity))
+            return;
+        entity.handleControl(controlType, pressed);
         if (player.level().isClientSide)
             PacketDistributor.sendToServer(new GamePlayControlC2SPayload(controlType, pressed));
     }

@@ -7,7 +7,7 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class FakeExplosionBehavior extends ExplosionDamageCalculator {
+public class FakeExplosionDamageCalculator extends ExplosionDamageCalculator {
     @Override
     public boolean shouldBlockExplode(@NotNull Explosion explosion, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, float power) {
         return false;

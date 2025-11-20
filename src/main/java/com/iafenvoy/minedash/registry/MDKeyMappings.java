@@ -1,8 +1,8 @@
 package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.data.ControlType;
 import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
-import com.iafenvoy.minedash.network.payload.GamePlayControlC2SPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.KeyMapping;
@@ -37,9 +37,9 @@ public final class MDKeyMappings {
     }
 
     static {
-        new KeyBindingHolder(JUMP).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.JUMP, b));
-        new KeyBindingHolder(LEFT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.LEFT, b));
-        new KeyBindingHolder(RIGHT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, GamePlayControlC2SPayload.ControlType.RIGHT, b));
+        new KeyBindingHolder(JUMP).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.JUMP, b));
+        new KeyBindingHolder(LEFT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.LEFT, b));
+        new KeyBindingHolder(RIGHT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.RIGHT, b));
     }
 
     //FIXME::Complex?

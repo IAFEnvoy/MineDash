@@ -3,12 +3,12 @@ package com.iafenvoy.minedash.entity;
 import com.iafenvoy.minedash.api.HitboxProvider;
 import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
+import com.iafenvoy.minedash.data.ControlType;
 import com.iafenvoy.minedash.data.PlayMode;
 import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
 import com.iafenvoy.minedash.registry.MDEntityDataSerializers;
 import com.iafenvoy.minedash.registry.MDItems;
-import com.iafenvoy.minedash.registry.MDSounds;
-import com.iafenvoy.minedash.util.MathUtil;
+import com.iafenvoy.minedash.util.FakeExplosionDamageCalculator;
 import com.iafenvoy.minedash.util.Timeout;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,7 +17,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,7 +47,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     private UUID owner;
     private boolean jump, left, right, dead;
     @Nullable
-    private BlockPos colliding = null;
+    private BlockPos collidingPos = null;
+    private Direction direction = Direction.SOUTH;
 
     public GamePlayEntity(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
@@ -127,23 +127,16 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     public void tick() {
         super.tick();
         this.checkCollisions();
-        //Rotation
-        this.setYRot((float) MathUtil.findClosestMultipleOf90(this.getYRot()));
-        this.yHeadRot = this.yBodyRot = this.getYRot();
-        //Movement
-        Vec3 deltaMovement = this.getDeltaMovement();
-        if (this.jump && this.onGround()) deltaMovement = deltaMovement.add(0, 0.67, 0);
-        if (this.left ^ this.right) deltaMovement = deltaMovement.with(Direction.Axis.Z, this.left ? 0.33 : -0.33);
-        else deltaMovement = deltaMovement.with(Direction.Axis.Z, 0);
-        this.setDeltaMovement(deltaMovement);
+        this.updateDirection(Direction.fromYRot(this.getYRot()));
+        this.setDeltaMovement(this.calculateHorizontalMovement(this.getDeltaMovement().add(0, this.calculateVerticalMovement(), 0)));
     }
 
-    public void checkCollisions() {
+    private void checkCollisions() {
         VoxelShape entityShape = Shapes.create(this.getBoundingBox());
-        if (this.colliding != null) {//Check if it's still colliding
-            BlockState state = this.level().getBlockState(this.colliding);
-            if (!(state.getBlock() instanceof HitboxProvider provider) || !Shapes.joinIsNotEmpty(provider.getHitbox(state, this.colliding), entityShape, BooleanOp.AND))
-                this.colliding = null;
+        if (this.collidingPos != null) {//Check if it's still colliding
+            BlockState state = this.level().getBlockState(this.collidingPos);
+            if (!(state.getBlock() instanceof HitboxProvider provider) || !Shapes.joinIsNotEmpty(provider.getHitbox(state, this.collidingPos), entityShape, BooleanOp.AND))
+                this.collidingPos = null;
         }
         final int checkRange = 3;
         for (int x = -checkRange; x <= checkRange; x++)
@@ -155,31 +148,51 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
                         switch (provider.getHitboxType()) {
                             case CRITICAL -> this.gameOver();
                             case INTERACTABLE -> {
-                                if (provider instanceof Interactable interactable) interactable.onCollision();
-                                if (this.colliding == null) this.colliding = pos;
+                                if (provider instanceof Interactable interactable) interactable.onCollision(this);
+                                if (this.collidingPos == null) this.collidingPos = pos;
                             }
                         }
                 }
     }
 
+    public void updateDirection(Direction direction) {
+        this.direction = direction;
+        this.setYRot(this.yHeadRot = this.yBodyRot = direction.toYRot());
+    }
+
+    private double calculateVerticalMovement() {
+        return this.jump && this.onGround() ? 0.67 * (this.isReverseGravity() ? -1 : 1) : 0;
+    }
+
+    private Vec3 calculateHorizontalMovement(Vec3 original) {
+        //TODO::Free move when no owner
+        Vec3 movement = Vec3.ZERO;
+        if (this.left ^ this.right) {
+            double factor = this.right ^ this.isReverseControl() ? -0.33 : 0.33;
+            movement = Vec3.atLowerCornerOf(this.direction.getClockWise().getNormal()).multiply(factor, factor, factor);
+        }
+        return original.with(Direction.Axis.X, movement.x).with(Direction.Axis.Z, movement.z);
+    }
+
     public void gameOver() {
         if (this.dead) return;
         this.dead = true;
-        if (!this.level().isClientSide)
-            this.level().playSound(null, this.blockPosition(), MDSounds.EXPLODE.get(), SoundSource.NEUTRAL, 3, 1);
-        Timeout.create(5, this::discard);
+        Timeout.create(4, () -> {
+            this.discard();
+            this.level().explode(this, this.damageSources().generic(), new FakeExplosionDamageCalculator(), this.position(), 2, false, Level.ExplosionInteraction.NONE);
+        });
     }
 
-    public void setJump(boolean jump) {
-        this.jump = jump;
-    }
-
-    public void setLeft(boolean left) {
-        this.left = left;
-    }
-
-    public void setRight(boolean right) {
-        this.right = right;
+    public void handleControl(ControlType controlType, boolean pressed) {
+        switch (controlType) {
+            case JUMP -> {
+                this.jump = pressed;
+                if (this.collidingPos != null && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable)
+                    interactable.onClick(this);
+            }
+            case LEFT -> this.left = pressed;
+            case RIGHT -> this.right = pressed;
+        }
     }
 
     public PlayMode getPlayMode() {

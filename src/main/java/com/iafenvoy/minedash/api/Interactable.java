@@ -1,7 +1,11 @@
 package com.iafenvoy.minedash.api;
 
-public interface Interactable {
-    void onCollision();
+import com.iafenvoy.minedash.entity.GamePlayEntity;
 
-    void onClick();
+public interface Interactable {
+    default void onCollision(GamePlayEntity entity) {
+    }
+
+    default void onClick(GamePlayEntity entity) {
+    }
 }

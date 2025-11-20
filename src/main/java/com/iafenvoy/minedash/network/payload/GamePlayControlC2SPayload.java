@@ -1,6 +1,7 @@
 package com.iafenvoy.minedash.network.payload;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.data.ControlType;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,10 +20,5 @@ public record GamePlayControlC2SPayload(ControlType controlType, boolean pressed
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public enum ControlType {
-        JUMP, LEFT, RIGHT;
-        public static final StreamCodec<ByteBuf, ControlType> STREAM_CODEC = ByteBufCodecs.idMapper(i -> ControlType.values()[i], Enum::ordinal);
     }
 }
