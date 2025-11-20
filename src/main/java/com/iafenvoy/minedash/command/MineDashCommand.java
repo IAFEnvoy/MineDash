@@ -2,6 +2,8 @@ package com.iafenvoy.minedash.command;
 
 import com.iafenvoy.minedash.MineDash;
 import com.iafenvoy.minedash.network.payload.ThemeColorChangeS2CPayload;
+import com.iafenvoy.minedash.render.GravityIndicatorRenderer;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -24,8 +26,16 @@ public final class MineDashCommand {
                         .then(argument("r", FloatArgumentType.floatArg(0, 1))
                                 .then(argument("g", FloatArgumentType.floatArg(0, 1))
                                         .then(argument("b", FloatArgumentType.floatArg(0, 1))
-                                                .executes(MineDashCommand::changeThemeColor))))
-                ));
+                                                .executes(MineDashCommand::changeThemeColor)))))
+                .then(literal("debug")
+                        .then(literal("gravity")
+                                .then(argument("reverse", BoolArgumentType.bool())
+                                        .executes(ctx -> {
+                                            boolean reverse = BoolArgumentType.getBool(ctx, "reverse");
+                                            GravityIndicatorRenderer.addIndicator(reverse);
+                                            return 1;
+                                        }))))
+        );
     }
 
     public static int changeThemeColor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
