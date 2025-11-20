@@ -1,14 +1,13 @@
 package com.iafenvoy.minedash.command;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.network.payload.GravityIndicatorS2CPayload;
 import com.iafenvoy.minedash.network.payload.ThemeColorChangeS2CPayload;
-import com.iafenvoy.minedash.render.GravityIndicatorRenderer;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -31,17 +30,15 @@ public final class MineDashCommand {
                         .then(literal("gravity")
                                 .then(argument("reverse", BoolArgumentType.bool())
                                         .executes(ctx -> {
-                                            boolean reverse = BoolArgumentType.getBool(ctx, "reverse");
-                                            GravityIndicatorRenderer.addIndicator(reverse);
+                                            PacketDistributor.sendToPlayer(ctx.getSource().getPlayerOrException(), new GravityIndicatorS2CPayload(BoolArgumentType.getBool(ctx, "reverse")));
                                             return 1;
                                         }))))
         );
     }
 
     public static int changeThemeColor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
         float r = FloatArgumentType.getFloat(ctx, "r"), g = FloatArgumentType.getFloat(ctx, "g"), b = FloatArgumentType.getFloat(ctx, "b");
-        PacketDistributor.sendToPlayer(player, new ThemeColorChangeS2CPayload(r, g, b));
+        PacketDistributor.sendToPlayer(ctx.getSource().getPlayerOrException(), new ThemeColorChangeS2CPayload(r, g, b));
         return 1;
     }
 }

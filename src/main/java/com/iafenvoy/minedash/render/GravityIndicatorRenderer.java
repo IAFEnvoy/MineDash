@@ -1,5 +1,6 @@
 package com.iafenvoy.minedash.render;
 
+import com.google.common.collect.ImmutableList;
 import com.iafenvoy.minedash.MineDash;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -12,10 +13,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,11 +38,11 @@ public enum GravityIndicatorRenderer implements LayeredDraw.Layer {
 
     @SubscribeEvent
     public static void registerIndicatorLayer(RegisterGuiLayersEvent event) {
-        event.registerBelowAll(GravityIndicatorRenderer.ID, GravityIndicatorRenderer.INSTANCE);
+        event.registerBelowAll(ID, INSTANCE);
     }
 
     private static class RenderInstance {
-        private static final int MOVE_RANGE = 8, MOVE_DELTA = 5;
+        private static final int MOVE_RANGE = 8, MOVE_DELTA = 5, COUNT = 30;
         private static final Random RANDOM = new Random();
         private final boolean reverse;
         private final List<SingleLine> points;
@@ -51,7 +50,17 @@ public enum GravityIndicatorRenderer implements LayeredDraw.Layer {
 
         public RenderInstance(boolean reverse, int width) {
             this.reverse = reverse;
-            this.points = generatePoints(0, width, 30, 0.6, 20);
+            ImmutableList.Builder<SingleLine> builder = ImmutableList.builder();
+            double step = (double) width / (COUNT - 1);
+            for (int i = 0; i < COUNT; i++)
+                builder.add(new SingleLine(
+                        (int) Mth.clamp(i * step + (RANDOM.nextDouble() - 0.5) * step * 0.6, 0, width),
+                        (int) RANDOM.nextDouble(-20, 20),
+                        (int) RANDOM.nextDouble(1, 3),
+                        (int) RANDOM.nextDouble(70, 80),
+                        (int) RANDOM.nextDouble(0x50, 0x7F)
+                ));
+            this.points = builder.build();
         }
 
         public void render(GuiGraphics graphics) {
@@ -66,19 +75,6 @@ public enum GravityIndicatorRenderer implements LayeredDraw.Layer {
 
         public boolean ended() {
             return this.progress < -MOVE_RANGE;
-        }
-
-        private static List<SingleLine> generatePoints(int xMin, int xMax, int count, double perturbation, int yRange) {
-            List<SingleLine> points = new LinkedList<>();
-            if (count <= 0 || perturbation < 0 || perturbation > 1 || xMin >= xMax) return points;
-            double step = (double) (xMax - xMin) / (count - 1);
-            for (int i = 0; i < count; i++) {
-                double offset = (RANDOM.nextDouble() - 0.5) * step * perturbation;
-                double finalPosition = xMin + i * step + offset;
-                double min = -yRange;
-                points.add(new SingleLine((int) Mth.clamp(finalPosition, xMin, xMax), (int) RANDOM.nextDouble(min, yRange), (int) RANDOM.nextDouble(1, 3), (int) RANDOM.nextDouble(70, 80), (int) RANDOM.nextDouble(0x50, 0x7F)));
-            }
-            return points;
         }
 
         private record SingleLine(int x, int y, int halfWidth, int halfHeight, int maxAlpha) {
