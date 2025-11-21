@@ -1,32 +1,31 @@
 package com.iafenvoy.minedash.item.block;
 
-import com.iafenvoy.minedash.api.HitboxProvider;
 import com.iafenvoy.minedash.api.HitboxType;
-import com.iafenvoy.minedash.api.Spike;
-import com.iafenvoy.minedash.item.block.entity.SpikeBlockEntity;
+import com.iafenvoy.minedash.api.Interactable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractSpikeBlock extends Block implements Spike, HitboxProvider, EntityBlock {
+public class AbstractPortalBlock extends Block implements Interactable {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    private final int particleColor;
 
-    public AbstractSpikeBlock(Properties properties) {
-        super(properties);
+    public AbstractPortalBlock(int particleColor) {
+        super(Properties.of());
+        this.particleColor = particleColor;
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.UP));
     }
 
@@ -51,17 +50,26 @@ public abstract class AbstractSpikeBlock extends Block implements Spike, HitboxP
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new SpikeBlockEntity(pos, state);
+    public @NotNull HitboxType getHitboxType() {
+        return HitboxType.INTERACTABLE;
+    }
+
+    @Override
+    public @NotNull VoxelShape getHitbox(@NotNull BlockState state) {
+        Direction.Axis axis = state.getValue(FACING).getAxis();
+        int x = axis == Direction.Axis.X ? 0 : 16;
+        int y = axis == Direction.Axis.Y ? 0 : 16;
+        int z = axis == Direction.Axis.Z ? 0 : 16;
+        return box(-x, -y, -z, x + 16, y + 16, z + 16);
+    }
+
+    @Override
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return Shapes.empty();
     }
 
     @Override
     protected @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         return Shapes.empty();
-    }
-
-    @Override
-    public @NotNull HitboxType getHitboxType() {
-        return HitboxType.CRITICAL;
     }
 }

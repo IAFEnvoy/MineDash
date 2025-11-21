@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "minedash:block/ball_portal"
+    },
+    "facing=east": {
+      "model": "minedash:block/ball_portal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "minedash:block/ball_portal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "minedash:block/ball_portal",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "minedash:block/ball_portal",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "minedash:block/ball_portal",
+      "x": 90
+    }
+  }
+}

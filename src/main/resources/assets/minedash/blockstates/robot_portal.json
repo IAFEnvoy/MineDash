@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "minedash:block/robot_portal"
+    },
+    "facing=east": {
+      "model": "minedash:block/robot_portal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "minedash:block/robot_portal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "minedash:block/robot_portal",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "minedash:block/robot_portal",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "minedash:block/robot_portal",
+      "x": 90
+    }
+  }
+}

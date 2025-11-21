@@ -1,11 +1,9 @@
 package com.iafenvoy.minedash.item.block;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class SpikeBlock extends AbstractSpikeBlock {
-    private static final MapCodec<SpikeBlock> CODEC = simpleCodec(SpikeBlock::new);
     private static final Map<Direction, VoxelShape> HITBOXES = ImmutableMap.<Direction, VoxelShape>builder()
             .put(Direction.UP, box(6, 6, 6, 10, 12, 10))
             .put(Direction.DOWN, box(6, 4, 6, 10, 10, 10))
@@ -27,11 +24,6 @@ public class SpikeBlock extends AbstractSpikeBlock {
 
     public SpikeBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

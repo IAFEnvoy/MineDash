@@ -1,6 +1,5 @@
 package com.iafenvoy.minedash.item.block;
 
-import com.iafenvoy.minedash.api.HitboxProvider;
 import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
 import com.iafenvoy.minedash.item.block.entity.RingBlockEntity;
@@ -9,6 +8,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -16,9 +16,14 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class RingBlock extends Block implements HitboxProvider, Interactable, EntityBlock {
+public class RingBlock extends Block implements Interactable, EntityBlock {
     public RingBlock() {
         super(Properties.ofFullCopy(Blocks.GLASS).lightLevel(state -> 15));
+    }
+
+    @Override
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override

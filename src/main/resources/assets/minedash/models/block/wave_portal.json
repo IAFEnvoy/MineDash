@@ -1,0 +1,7 @@
+{
+  "parent": "minedash:custom/mode_portal",
+  "textures": {
+    "layer0": "minedash:block/portal/wave",
+    "particle": "minedash:block/portal/wave"
+  }
+}

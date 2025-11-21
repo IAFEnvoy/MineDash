@@ -131,11 +131,14 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         return !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
     }
 
+    public boolean isInLevel(double y) {
+        return this.level().getMinBuildHeight() - 10 <= y && y <= this.level().getMaxBuildHeight() + 10;
+    }
+
     @Override
     public void tick() {
         super.tick();
-        if (this.level().getMinBuildHeight() - 10 > this.getY() || this.getY() > this.level().getMaxBuildHeight() + 10)
-            this.gameOver();
+        if (!this.isInLevel(this.getY())) this.gameOver();
         this.checkCollisions();
         this.updateDirection(Direction.fromYRot(this.getYRot()));
         this.setDeltaMovement(this.calculateHorizontalMovement(this.getDeltaMovement().add(0, this.calculateVerticalMovement(), 0)));
@@ -202,7 +205,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         switch (controlType) {
             case JUMP -> {
                 this.jump = pressed;
-                if (this.collidingPos != null && !this.collidingInteracted && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable) {
+                if (pressed && this.collidingPos != null && !this.collidingInteracted && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable) {
                     this.collidingInteracted = true;
                     interactable.onClick(this);
                 }
@@ -225,10 +228,11 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     }
 
     public void setReverseGravity(boolean reverseGravity, boolean indicate) {
+        boolean changed = this.isReverseGravity() ^ reverseGravity;
         this.entityData.set(REVERSE_GRAVITY, reverseGravity);
         AttributeInstance attribute = this.getAttribute(Attributes.GRAVITY);
         if (attribute != null) attribute.setBaseValue(0.08 * this.gravityFactor());
-        if (indicate && !this.level().isClientSide && this.getOwner() instanceof ServerPlayer player)
+        if (changed && indicate && !this.level().isClientSide && this.getOwner() instanceof ServerPlayer player)
             PacketDistributor.sendToPlayer(player, new GravityIndicatorS2CPayload(reverseGravity));
     }
 

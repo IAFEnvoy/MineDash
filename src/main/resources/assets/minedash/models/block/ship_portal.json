@@ -1,0 +1,7 @@
+{
+  "parent": "minedash:custom/mode_portal",
+  "textures": {
+    "layer0": "minedash:block/portal/ship",
+    "particle": "minedash:block/portal/ship"
+  }
+}

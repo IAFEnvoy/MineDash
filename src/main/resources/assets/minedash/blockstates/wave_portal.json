@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "minedash:block/wave_portal"
+    },
+    "facing=east": {
+      "model": "minedash:block/wave_portal",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "minedash:block/wave_portal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "minedash:block/wave_portal",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "minedash:block/wave_portal",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "minedash:block/wave_portal",
+      "x": 90
+    }
+  }
+}
