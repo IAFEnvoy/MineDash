@@ -12,11 +12,11 @@ public class GravityRingBlock extends RingBlock {
 
     @Override
     public void onClick(GamePlayEntity entity) {
-        entity.reverseGravity();
+        entity.reverseGravity(true);
         if (this.reverseVelocity) {
             Vec3 vec3 = entity.getDeltaMovement();
             vec3 = new Vec3(vec3.x, -vec3.y, vec3.z);
             entity.setDeltaMovement(vec3);
-        }
+        } else entity.addDeltaMovement(new Vec3(0, 0.33 * entity.gravityFactor(), 0));
     }
 }

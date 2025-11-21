@@ -33,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -41,6 +42,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider {
@@ -78,7 +80,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         super.readAdditionalSaveData(tag);
         this.owner = tag.contains("Owner", Tag.TAG_INT_ARRAY) ? tag.getUUID("Owner") : null;
         this.setPlayMode(tag.contains("PlayMode", Tag.TAG_STRING) ? PlayMode.valueOf(tag.getString("PlayMode")) : PlayMode.CUBE);
-        this.setReverseGravity(tag.getBoolean("ReverseGravity"));
+        this.setReverseGravity(tag.getBoolean("ReverseGravity"), false);
         this.setReverseControl(tag.getBoolean("ReverseControl"));
         this.setSmall(tag.getBoolean("Small"));
     }
@@ -132,6 +134,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     @Override
     public void tick() {
         super.tick();
+        if (this.level().getMinBuildHeight() - 10 > this.getY() || this.getY() > this.level().getMaxBuildHeight() + 10)
+            this.gameOver();
         this.checkCollisions();
         this.updateDirection(Direction.fromYRot(this.getYRot()));
         this.setDeltaMovement(this.calculateHorizontalMovement(this.getDeltaMovement().add(0, this.calculateVerticalMovement(), 0)));
@@ -220,16 +224,16 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         return this.entityData.get(REVERSE_GRAVITY);
     }
 
-    public void setReverseGravity(boolean reverseGravity) {
+    public void setReverseGravity(boolean reverseGravity, boolean indicate) {
         this.entityData.set(REVERSE_GRAVITY, reverseGravity);
         AttributeInstance attribute = this.getAttribute(Attributes.GRAVITY);
         if (attribute != null) attribute.setBaseValue(0.08 * this.gravityFactor());
-        if (!this.level().isClientSide && this.getOwner() instanceof ServerPlayer player)
+        if (indicate && !this.level().isClientSide && this.getOwner() instanceof ServerPlayer player)
             PacketDistributor.sendToPlayer(player, new GravityIndicatorS2CPayload(reverseGravity));
     }
 
-    public void reverseGravity() {
-        this.setReverseGravity(!this.isReverseGravity());
+    public void reverseGravity(boolean indicate) {
+        this.setReverseGravity(!this.isReverseGravity(), indicate);
     }
 
     public int gravityFactor() {
@@ -250,5 +254,32 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public void setSmall(boolean small) {
         this.entityData.set(SMALL, small);
+    }
+
+
+    @Override
+    protected @NotNull AABB makeBoundingBox() {
+        return super.makeBoundingBox().move(0, this.isReverseGravity() ? 0.1 : 0, 0);
+    }
+
+    //Gravity patch
+    @Override
+    protected void checkSupportingBlock(boolean onGround, @javax.annotation.Nullable Vec3 movement) {
+        if (onGround) {
+            AABB aabb = this.getBoundingBox();
+            AABB aabb1 = this.isReverseGravity() ? new AABB(aabb.minX, aabb.maxY, aabb.minZ, aabb.maxX, aabb.maxY + 1.0E-6, aabb.maxZ) : new AABB(aabb.minX, aabb.minY - 1.0E-6, aabb.minZ, aabb.maxX, aabb.minY, aabb.maxZ);
+            Optional<BlockPos> optional = this.level().findSupportingBlock(this, aabb1);
+            if (optional.isEmpty() && !this.onGroundNoBlocks) {
+                if (movement != null) {
+                    AABB aabb2 = aabb1.move(-movement.x, 0, -movement.z);
+                    optional = this.level().findSupportingBlock(this, aabb2);
+                    this.mainSupportingBlockPos = optional;
+                }
+            } else this.mainSupportingBlockPos = optional;
+            this.onGroundNoBlocks = optional.isEmpty();
+        } else {
+            this.onGroundNoBlocks = false;
+            if (this.mainSupportingBlockPos.isPresent()) this.mainSupportingBlockPos = Optional.empty();
+        }
     }
 }
