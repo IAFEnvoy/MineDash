@@ -2,10 +2,17 @@ package com.iafenvoy.minedash.api;
 
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 
+import java.util.OptionalInt;
+
 public interface Interactable extends HitboxProvider {
-    default void onCollision(GamePlayEntity entity) {
+    int RING_TICK = 20, SPIDER_RING_TICK = 10;
+
+    //Return value: Trail ticks
+    default OptionalInt onCollision(GamePlayEntity entity) {
+        return OptionalInt.empty();
     }
 
-    default void onClick(GamePlayEntity entity) {
+    default OptionalInt onClick(GamePlayEntity entity) {
+        return OptionalInt.empty();
     }
 }

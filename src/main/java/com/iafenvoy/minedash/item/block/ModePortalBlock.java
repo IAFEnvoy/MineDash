@@ -3,6 +3,8 @@ package com.iafenvoy.minedash.item.block;
 import com.iafenvoy.minedash.data.PlayMode;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 
+import java.util.OptionalInt;
+
 public class ModePortalBlock extends AbstractPortalBlock {
     private final PlayMode classic, platformer;
 
@@ -13,8 +15,9 @@ public class ModePortalBlock extends AbstractPortalBlock {
     }
 
     @Override
-    public void onCollision(GamePlayEntity entity) {
+    public OptionalInt onCollision(GamePlayEntity entity) {
         //FIXME::Game mode check
         entity.setPlayMode(this.platformer);
+        return OptionalInt.empty();
     }
 }

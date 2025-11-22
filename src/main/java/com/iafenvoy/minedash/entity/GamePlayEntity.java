@@ -55,6 +55,9 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     //Rendering
     public static final EntityDataAccessor<Integer> PRIMARY_COLOR = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> SECONDARY_COLOR = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.INT);
+    //Below should not save
+    public static final EntityDataAccessor<Boolean> TRAIL = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
+    //Fields
     @Nullable
     private UUID owner;
     //Below should not save
@@ -63,8 +66,9 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     private BlockPos collidingPos = null;
     private boolean collidingInteracted = false;
     private Direction direction = Direction.SOUTH;
+    private int trailTick = 0;
     //Client only cache
-    private final TrailHolder trail = new TrailHolder(0.75f, 32);
+    private final TrailHolder trail = new TrailHolder(0.75f, 40);
 
     public GamePlayEntity(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
@@ -83,30 +87,31 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         builder.define(SMALL, false);
         builder.define(PRIMARY_COLOR, 0xFFFF00);
         builder.define(SECONDARY_COLOR, 0x00FFFF);
+        builder.define(TRAIL, false);
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.owner = tag.contains("Owner", Tag.TAG_INT_ARRAY) ? tag.getUUID("Owner") : null;
         this.setPlayMode(tag.contains("PlayMode", Tag.TAG_STRING) ? PlayMode.valueOf(tag.getString("PlayMode")) : PlayMode.CUBE);
         this.setReverseGravity(tag.getBoolean("ReverseGravity"), false);
         this.setReverseControl(tag.getBoolean("ReverseControl"));
         this.setSmall(tag.getBoolean("Small"));
         this.setPrimaryColor(tag.getInt("PrimaryColor"));
         this.setSecondaryColor(tag.getInt("SecondaryColor"));
+        this.owner = tag.contains("Owner", Tag.TAG_INT_ARRAY) ? tag.getUUID("Owner") : null;
     }
 
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (this.owner != null) tag.putUUID("Owner", this.owner);
         tag.putString("PlayMode", this.getPlayMode().name());
         tag.putBoolean("ReverseGravity", this.isReverseGravity());
         tag.putBoolean("ReverseControl", this.isReverseControl());
         tag.putBoolean("Small", this.isSmall());
         tag.putInt("PrimaryColor", this.getPrimaryColor());
         tag.putInt("SecondaryColor", this.getSecondaryColor());
+        if (this.owner != null) tag.putUUID("Owner", this.owner);
     }
 
     @Override
@@ -154,6 +159,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         super.tick();
         if (!this.isInLevel(this.getY())) this.gameOver();
         this.checkCollisions();
+        this.tickTrail();
         this.updateDirection(Direction.fromYRot(this.getYRot()));
         this.setDeltaMovement(this.calculateHorizontalMovement(this.getDeltaMovement().add(0, this.calculateVerticalMovement(), 0)));
     }
@@ -177,10 +183,11 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
                         switch (provider.getHitboxType()) {
                             case CRITICAL -> this.gameOver();
                             case INTERACTABLE -> {
-                                if (provider instanceof Interactable interactable) interactable.onCollision(this);
                                 if (this.collidingPos == null) {
                                     this.collidingPos = pos;
                                     this.collidingInteracted = false;
+                                    if (provider instanceof Interactable interactable)
+                                        interactable.onCollision(this).ifPresent(this::setTrailTick);
                                 }
                             }
                         }
@@ -215,13 +222,23 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         });
     }
 
+    public void tickTrail() {
+        if (this.trailTick <= 0) this.setTrail(false);
+        else this.trailTick--;
+    }
+
+    public void setTrailTick(int tick) {
+        this.trailTick = tick;
+        this.setTrail(tick > 0);
+    }
+
     public void handleControl(ControlType controlType, boolean pressed) {
         switch (controlType) {
             case JUMP -> {
                 this.jump = pressed;
                 if (pressed && this.collidingPos != null && !this.collidingInteracted && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable) {
                     this.collidingInteracted = true;
-                    interactable.onClick(this);
+                    interactable.onClick(this).ifPresent(this::setTrailTick);
                 }
             }
             case LEFT -> this.left = pressed;
@@ -288,6 +305,14 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public void setSecondaryColor(int color) {
         this.entityData.set(SECONDARY_COLOR, color);
+    }
+
+    public boolean hasTrail() {
+        return this.entityData.get(TRAIL);
+    }
+
+    public void setTrail(boolean trail) {
+        this.entityData.set(TRAIL, trail);
     }
 
     public TrailHolder getTrail() {

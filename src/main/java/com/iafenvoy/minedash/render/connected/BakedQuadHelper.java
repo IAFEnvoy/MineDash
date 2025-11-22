@@ -3,7 +3,6 @@ package com.iafenvoy.minedash.render.connected;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Arrays;
 
