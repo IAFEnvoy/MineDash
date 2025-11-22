@@ -24,9 +24,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -43,10 +41,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider {
+public class GamePlayEntity extends LivingEntity implements OwnableEntity, HitboxProvider {
     //Play meta
     public static final EntityDataAccessor<PlayMode> PLAY_MODE = SynchedEntityData.defineId(GamePlayEntity.class, MDEntityDataSerializers.PLAY_MODE.get());
     public static final EntityDataAccessor<Boolean> REVERSE_GRAVITY = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
@@ -68,14 +67,14 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     private Direction direction = Direction.SOUTH;
     private int trailTick = 0;
     //Client only cache
-    private final TrailHolder trail = new TrailHolder(0.75f, 40);
+    private final TrailHolder trail = new TrailHolder(0.5f, 40);
 
-    public GamePlayEntity(EntityType<? extends Mob> entityType, Level level) {
+    public GamePlayEntity(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
 
     public static @NotNull AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes();
+        return createLivingAttributes();
     }
 
     @Override
@@ -103,6 +102,25 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     }
 
     @Override
+    public @NotNull Iterable<ItemStack> getArmorSlots() {
+        return List.of();
+    }
+
+    @Override
+    public @NotNull ItemStack getItemBySlot(@NotNull EquipmentSlot slot) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setItemSlot(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
+    }
+
+    @Override
+    public @NotNull HumanoidArm getMainArm() {
+        return HumanoidArm.RIGHT;
+    }
+
+    @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putString("PlayMode", this.getPlayMode().name());
@@ -125,7 +143,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.is(MDItems.DELETE_STICK)) this.discard();
         else {
@@ -229,7 +247,7 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
 
     public void setTrailTick(int tick) {
         this.trailTick = tick;
-        this.setTrail(tick > 0);
+        this.setTrail(this.trailTick > 0);
     }
 
     public void handleControl(ControlType controlType, boolean pressed) {

@@ -9,12 +9,12 @@ import com.iafenvoy.minedash.trail.TrailRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class GamePlayEntityRenderer extends MobRenderer<GamePlayEntity, GamePlayModel<GamePlayEntity>> {
+public class GamePlayEntityRenderer extends LivingEntityRenderer<GamePlayEntity, GamePlayModel<GamePlayEntity>> {
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "textures/entity/default_game_play.png");
 
     public GamePlayEntityRenderer(EntityRendererProvider.Context context) {
@@ -37,4 +37,8 @@ public class GamePlayEntityRenderer extends MobRenderer<GamePlayEntity, GamePlay
         return TEXTURE;
     }
 
+    @Override
+    protected boolean shouldShowName(@NotNull GamePlayEntity entity) {
+        return false;
+    }
 }

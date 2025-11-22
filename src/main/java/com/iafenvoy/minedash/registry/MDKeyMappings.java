@@ -11,8 +11,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayList;
@@ -42,7 +42,6 @@ public final class MDKeyMappings {
         new KeyBindingHolder(RIGHT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.RIGHT, b));
     }
 
-    //FIXME::Complex?
     public static class KeyBindingHolder {
         public final Supplier<KeyMapping> keyBinding;
         private final List<BooleanConsumer> callback = new ArrayList<>();
@@ -57,17 +56,14 @@ public final class MDKeyMappings {
             this.callback.add(consumer);
         }
 
-        public void tick(ClientTickEvent.Post event) {
+        public void tick(RenderLevelStageEvent event) {//client tick=20, render tick=fps
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
             KeyMapping k = this.keyBinding.get();
             if (k == null) return;
             boolean curr = k.isDown();
             if (!this.pressed && curr) this.callback.forEach(x -> x.accept(true));
             if (this.pressed && !curr) this.callback.forEach(x -> x.accept(false));
             this.pressed = curr;
-        }
-
-        public boolean isPressed() {
-            return this.pressed;
         }
     }
 }

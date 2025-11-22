@@ -3,7 +3,8 @@
   "package": "com.iafenvoy.minedash.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "LivingEntityMixin"
   ],
   "client": [
     "BlockEntityWithoutLevelRendererMixin",
