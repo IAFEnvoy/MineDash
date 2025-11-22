@@ -94,7 +94,8 @@ public final class HitBoxRenderer {
         for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(chunkRange * 16, chunkRange * 16, chunkRange * 16)))
             if (entity instanceof HitboxProvider provider) {
                 poseStack.pushPose();
-                poseStack.translate(entity.getX() - 0.5, entity.getY(), entity.getZ() - 0.5);
+                Vec3 pos = entity.getPosition(RenderHelper.wrapPartialTick(event.getPartialTick(), entity));
+                poseStack.translate(pos.x - 0.5, pos.y, pos.z - 0.5);
                 renderHitBox(poseStack.last(), provider.getHitbox(Blocks.AIR.defaultBlockState()), provider.getHitboxType().getColor());
                 poseStack.popPose();
             }

@@ -9,6 +9,7 @@ import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
 import com.iafenvoy.minedash.network.payload.GravityIndicatorS2CPayload;
 import com.iafenvoy.minedash.registry.MDEntityDataSerializers;
 import com.iafenvoy.minedash.registry.MDItems;
+import com.iafenvoy.minedash.trail.TrailHolder;
 import com.iafenvoy.minedash.util.FakeExplosionDamageCalculator;
 import com.iafenvoy.minedash.util.Timeout;
 import net.minecraft.core.BlockPos;
@@ -46,17 +47,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider {
+    //Play meta
     public static final EntityDataAccessor<PlayMode> PLAY_MODE = SynchedEntityData.defineId(GamePlayEntity.class, MDEntityDataSerializers.PLAY_MODE.get());
     public static final EntityDataAccessor<Boolean> REVERSE_GRAVITY = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> REVERSE_CONTROL = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> SMALL = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.BOOLEAN);
+    //Rendering
+    public static final EntityDataAccessor<Integer> PRIMARY_COLOR = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> SECONDARY_COLOR = SynchedEntityData.defineId(GamePlayEntity.class, EntityDataSerializers.INT);
     @Nullable
     private UUID owner;
+    //Below should not save
     private boolean jump, left, right, dead;
     @Nullable
     private BlockPos collidingPos = null;
     private boolean collidingInteracted = false;
     private Direction direction = Direction.SOUTH;
+    //Client only cache
+    private final TrailHolder trail = new TrailHolder(0.75f, 32);
 
     public GamePlayEntity(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
@@ -73,6 +81,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         builder.define(REVERSE_GRAVITY, false);
         builder.define(REVERSE_CONTROL, false);
         builder.define(SMALL, false);
+        builder.define(PRIMARY_COLOR, 0xFFFF00);
+        builder.define(SECONDARY_COLOR, 0x00FFFF);
     }
 
     @Override
@@ -83,6 +93,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         this.setReverseGravity(tag.getBoolean("ReverseGravity"), false);
         this.setReverseControl(tag.getBoolean("ReverseControl"));
         this.setSmall(tag.getBoolean("Small"));
+        this.setPrimaryColor(tag.getInt("PrimaryColor"));
+        this.setSecondaryColor(tag.getInt("SecondaryColor"));
     }
 
     @Override
@@ -93,6 +105,8 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         tag.putBoolean("ReverseGravity", this.isReverseGravity());
         tag.putBoolean("ReverseControl", this.isReverseControl());
         tag.putBoolean("Small", this.isSmall());
+        tag.putInt("PrimaryColor", this.getPrimaryColor());
+        tag.putInt("SecondaryColor", this.getSecondaryColor());
     }
 
     @Override
@@ -260,6 +274,25 @@ public class GamePlayEntity extends Mob implements OwnableEntity, HitboxProvider
         this.entityData.set(SMALL, small);
     }
 
+    public int getPrimaryColor() {
+        return this.entityData.get(PRIMARY_COLOR);
+    }
+
+    public void setPrimaryColor(int color) {
+        this.entityData.set(PRIMARY_COLOR, color);
+    }
+
+    public int getSecondaryColor() {
+        return this.entityData.get(SECONDARY_COLOR);
+    }
+
+    public void setSecondaryColor(int color) {
+        this.entityData.set(SECONDARY_COLOR, color);
+    }
+
+    public TrailHolder getTrail() {
+        return this.trail;
+    }
 
     @Override
     protected @NotNull AABB makeBoundingBox() {

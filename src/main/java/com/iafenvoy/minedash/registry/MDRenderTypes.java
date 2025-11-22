@@ -2,6 +2,7 @@ package com.iafenvoy.minedash.registry;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -13,22 +14,21 @@ import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public final class MDRenderTypes {
-    private static final Function<ResourceLocation, RenderType> DEFAULT_BACKGROUND = texture -> RenderType.create("default_background",
+    private static final Function<ResourceLocation, RenderType> DEFAULT_BACKGROUND = Util.memoize(texture -> RenderType.create("default_background",
             DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.QUADS,
             256,
-            false,
-            false,
             RenderType.CompositeState.builder()
                     .setShaderState(new RenderType.ShaderStateShard(() -> MDShaderInstances.DEFAULT_BACKGROUND))
                     .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
                             .add(texture, false, false)
                             .build())
-                    .createCompositeState(false));
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .createCompositeState(false)));
     private static final RenderType HITBOX_OUTLINE = RenderType.create("hitbox_outline",
             DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.LINES,
-            1536,
+            RenderType.TRANSIENT_BUFFER_SIZE,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
                     .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
@@ -42,7 +42,7 @@ public final class MDRenderTypes {
     private static final RenderType HITBOX_OUTLINE_STRIP = RenderType.create("hitbox_outline_strip",
             DefaultVertexFormat.POSITION_COLOR,
             VertexFormat.Mode.LINE_STRIP,
-            1536,
+            RenderType.TRANSIENT_BUFFER_SIZE,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
                     .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
@@ -53,6 +53,20 @@ public final class MDRenderTypes {
                     .setCullState(RenderStateShard.NO_CULL)
                     .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
                     .createCompositeState(false));
+    private static final Function<ResourceLocation, RenderType> TRANSLUCENT_NO_DEPTH = Util.memoize(location -> RenderType.create("entity_translucent_no_depth",
+            DefaultVertexFormat.NEW_ENTITY,
+            VertexFormat.Mode.QUADS,
+            RenderType.MEGABYTE,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+                    .setOverlayState(RenderStateShard.OVERLAY)
+                    .createCompositeState(true)));
 
     public static RenderType background(ResourceLocation texture) {
         return DEFAULT_BACKGROUND.apply(texture);
@@ -64,5 +78,9 @@ public final class MDRenderTypes {
 
     public static RenderType hitboxOutlineStrip() {
         return HITBOX_OUTLINE_STRIP;
+    }
+
+    public static RenderType translucentNoDepth(ResourceLocation texture) {
+        return TRANSLUCENT_NO_DEPTH.apply(texture);
     }
 }
