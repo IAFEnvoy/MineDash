@@ -17,11 +17,9 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
-//TODO::Should use key-down and key-up instead of key-pressed?
 public final class MDKeyMappings {
     public static final String CATEGORY = "category.%s.main".formatted(MineDash.MOD_ID);
 
@@ -37,30 +35,28 @@ public final class MDKeyMappings {
     }
 
     static {
-        new KeyBindingHolder(JUMP).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.JUMP, b));
-        new KeyBindingHolder(LEFT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.LEFT, b));
-        new KeyBindingHolder(RIGHT).registerPressCallback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.RIGHT, b));
+        new KeyHolder(JUMP).callback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.JUMP, b));
+        new KeyHolder(LEFT).callback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.LEFT, b));
+        new KeyHolder(RIGHT).callback(b -> GamePlayPacketDistributor.runAction(Minecraft.getInstance().player, ControlType.RIGHT, b));
     }
 
-    public static class KeyBindingHolder {
-        public final Supplier<KeyMapping> keyBinding;
+    private static class KeyHolder {
+        public final KeyMapping keyBinding;
         private final List<BooleanConsumer> callback = new ArrayList<>();
         private boolean pressed;
 
-        public KeyBindingHolder(KeyMapping keyBinding) {
-            this.keyBinding = () -> keyBinding;
+        public KeyHolder(KeyMapping keyBinding) {
+            this.keyBinding = keyBinding;
             NeoForge.EVENT_BUS.addListener(this::tick);
         }
 
-        public void registerPressCallback(BooleanConsumer consumer) {
+        public void callback(BooleanConsumer consumer) {
             this.callback.add(consumer);
         }
 
         public void tick(RenderLevelStageEvent event) {//client tick=20, render tick=fps
             if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
-            KeyMapping k = this.keyBinding.get();
-            if (k == null) return;
-            boolean curr = k.isDown();
+            boolean curr = this.keyBinding.isDown();
             if (!this.pressed && curr) this.callback.forEach(x -> x.accept(true));
             if (this.pressed && !curr) this.callback.forEach(x -> x.accept(false));
             this.pressed = curr;

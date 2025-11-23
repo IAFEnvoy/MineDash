@@ -75,7 +75,6 @@ public final class HitBoxRenderer {
         LocalPlayer player = Minecraft.getInstance().player;
         assert player != null;
         PoseStack poseStack = event.getPoseStack();
-        //TODO::Config
         int chunkRange = MDClientConfig.INSTANCE.general.hitboxDisplayRange.getValue();
         poseStack.pushPose();
         Vec3 cameraPos = event.getCamera().getPosition();

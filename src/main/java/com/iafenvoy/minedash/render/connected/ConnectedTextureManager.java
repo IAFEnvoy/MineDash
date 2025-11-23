@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(Dist.CLIENT)
 public class ConnectedTextureManager {
     private static final ConnectedTextureManager MODEL_SWAPPER = new ConnectedTextureManager();
-    protected CustomBlockModels customBlockModels = new CustomBlockModels();
+    protected final CustomBlockModels customBlockModels = new CustomBlockModels();
 
     public CustomBlockModels getCustomBlockModels() {
         return this.customBlockModels;

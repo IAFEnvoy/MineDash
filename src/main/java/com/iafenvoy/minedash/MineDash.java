@@ -19,5 +19,6 @@ public final class MineDash {
         MDEntities.REGISTRY.register(bus);
         MDEntityDataSerializers.REGISTRY.register(bus);
         MDItems.REGISTRY.register(bus);
+        MDParticles.REGISTRY.register(bus);
     }
 }
