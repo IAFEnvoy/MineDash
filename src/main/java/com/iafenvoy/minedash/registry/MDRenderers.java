@@ -1,5 +1,6 @@
 package com.iafenvoy.minedash.registry;
 
+import com.iafenvoy.minedash.particle.CubeParticleProvider;
 import com.iafenvoy.minedash.render.DynamicItemRenderer;
 import com.iafenvoy.minedash.render.block.DefaultBackgroundBlockEntityRenderer;
 import com.iafenvoy.minedash.render.block.RingBlockEntityRenderer;
@@ -12,6 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(Dist.CLIENT)
@@ -31,5 +33,10 @@ public final class MDRenderers {
         event.registerBlockEntityRenderer(MDBlockEntities.DEFAULT_BACKGROUND.get(), ctx -> new DefaultBackgroundBlockEntityRenderer());
         event.registerBlockEntityRenderer(MDBlockEntities.SPIKE.get(), ctx -> new SpikeBlockEntityRenderer());
         event.registerBlockEntityRenderer(MDBlockEntities.RING.get(), RingBlockEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(MDParticles.CUBE.get(), CubeParticleProvider::new);
     }
 }

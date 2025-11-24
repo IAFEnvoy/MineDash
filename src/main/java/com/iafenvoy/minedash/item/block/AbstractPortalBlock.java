@@ -2,10 +2,13 @@ package com.iafenvoy.minedash.item.block;
 
 import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
+import com.iafenvoy.minedash.particle.CubeParticleOptions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -13,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -61,6 +65,14 @@ public class AbstractPortalBlock extends Block implements Interactable {
         int y = axis == Direction.Axis.Y ? 0 : 16;
         int z = axis == Direction.Axis.Z ? 0 : 16;
         return box(-x, -y, -z, x + 16, y + 16, z + 16);
+    }
+
+    @Override
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+        super.animateTick(state, level, pos, random);
+        Vec3 center = pos.getCenter();
+        for (int i = 0; i < 4; i++)
+            level.addParticle(new CubeParticleOptions(CubeParticleOptions.MovementType.ACCUMULATE, this.particleColor | 0x5F000000, level.random.nextFloat() * 0.15f + 0.15f, 1.5, state.getValue(FACING)), center.x, center.y, center.z, 0, 0, 0);
     }
 
     @Override

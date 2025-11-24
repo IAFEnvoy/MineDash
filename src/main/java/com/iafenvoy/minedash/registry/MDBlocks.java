@@ -37,7 +37,7 @@ public final class MDBlocks {
     public static final DeferredBlock<ModePortalBlock> SHIP_PORTAL = register("ship_portal", () -> new ModePortalBlock(PlayMode.SHIP, PlayMode.JETPACK, 0xFF00FF));
     public static final DeferredBlock<ModePortalBlock> BALL_PORTAL = register("ball_portal", () -> new ModePortalBlock(PlayMode.BALL, PlayMode.BALL, 0xFF0000));
     public static final DeferredBlock<ModePortalBlock> UFO_PORTAL = register("ufo_portal", () -> new ModePortalBlock(PlayMode.UFO, PlayMode.UFO, 0xFFA500));
-    public static final DeferredBlock<ModePortalBlock> WAVE_PORTAL = register("wave_portal", () -> new ModePortalBlock(PlayMode.WAVE, PlayMode.JETPACK, 0xFF00FF));
+    public static final DeferredBlock<ModePortalBlock> WAVE_PORTAL = register("wave_portal", () -> new ModePortalBlock(PlayMode.WAVE, PlayMode.JETPACK, 0x00FFFF));
     public static final DeferredBlock<ModePortalBlock> ROBOT_PORTAL = register("robot_portal", () -> new ModePortalBlock(PlayMode.ROBOT, PlayMode.ROBOT, 0xFFFFFF));
     public static final DeferredBlock<ModePortalBlock> SPIDER_PORTAL = register("spider_portal", () -> new ModePortalBlock(PlayMode.SPIDER, PlayMode.SPIDER, 0x8A2BE2));
     public static final DeferredBlock<ModePortalBlock> SWING_PORTAL = register("swing_portal", () -> new ModePortalBlock(PlayMode.SWING, PlayMode.JETPACK, 0xFFFF00));

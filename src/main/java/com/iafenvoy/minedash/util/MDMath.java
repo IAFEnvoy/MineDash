@@ -21,14 +21,14 @@ public class MDMath {
         return !(Math.abs(diffZ) > (double) 1.0E-5F) && !(Math.abs(diffX) > (double) 1.0E-5F) ? 0 : (float) (Mth.atan2(diffZ, diffX) * Mth.DEG_TO_RAD);
     }
 
-    public static Vec3 rotationToPosition(float radius, float pitch, float yaw) {
-        double endPosX = radius * Math.cos(yaw * Mth.RAD_TO_DEG) * Math.cos(pitch * Mth.RAD_TO_DEG);
-        double endPosY = radius * Math.sin(pitch * Mth.RAD_TO_DEG);
-        double endPosZ = radius * Math.sin(yaw * Mth.RAD_TO_DEG) * Math.cos(pitch * Mth.RAD_TO_DEG);
+    public static Vec3 rotationToPosition(double radius, double pitch, double yaw) {
+        double endPosX = radius * Math.cos(yaw) * Math.cos(pitch);
+        double endPosY = radius * Math.sin(pitch);
+        double endPosZ = radius * Math.sin(yaw) * Math.cos(pitch);
         return new Vec3(endPosX, endPosY, endPosZ);
     }
 
-    public static Vec3 rotationToPosition(Vec3 startPos, float radius, float pitch, float yaw) {
+    public static Vec3 rotationToPosition(Vec3 startPos, double radius, double pitch, double yaw) {
         return startPos.add(rotationToPosition(radius, pitch, yaw));
     }
 
