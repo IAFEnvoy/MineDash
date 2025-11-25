@@ -16,8 +16,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class RingBlock extends Block implements Interactable, EntityBlock {
-    public RingBlock() {
+public class AbstractRingBlock extends Block implements Interactable, EntityBlock {
+    public AbstractRingBlock() {
         super(Properties.ofFullCopy(Blocks.GLASS).lightLevel(state -> 15));
     }
 

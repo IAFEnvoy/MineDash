@@ -24,14 +24,20 @@ public final class MDBlocks {
     public static final DeferredBlock<AbstractSpikeBlock> SPIKE = register("spike", () -> new SpikeBlock(BlockBehaviour.Properties.of()));
     public static final DeferredBlock<AbstractSpikeBlock> SMALL_SPIKE = register("small_spike", () -> new SmallSpikeBlock(BlockBehaviour.Properties.of()));
 
-    public static final DeferredBlock<JumpRingBlock> JUMP_RING = register("jump_ring", () -> new JumpRingBlock(0.67));
-    public static final DeferredBlock<JumpRingBlock> BIG_JUMP_RING = register("big_jump_ring", () -> new JumpRingBlock(0.85));
-    public static final DeferredBlock<JumpRingBlock> SMALL_JUMP_RING = register("small_jump_ring", () -> new JumpRingBlock(0.45));
+    public static final DeferredBlock<JumpRingBlock> JUMP_RING = register("jump_ring", () -> new JumpRingBlock(0.67));//2
+    public static final DeferredBlock<JumpRingBlock> BIG_JUMP_RING = register("big_jump_ring", () -> new JumpRingBlock(0.85));//4
+    public static final DeferredBlock<JumpRingBlock> SMALL_JUMP_RING = register("small_jump_ring", () -> new JumpRingBlock(0.45));//1
     public static final DeferredBlock<JumpRingBlock> DROP_RING = register("drop_ring", () -> new JumpRingBlock(-0.67));
     public static final DeferredBlock<GravityRingBlock> GRAVITY_RING = register("gravity_ring", () -> new GravityRingBlock(true));
     public static final DeferredBlock<GravityRingBlock> GRAVITY_JUMP_RING = register("gravity_jump_ring", () -> new GravityRingBlock(false));
     public static final DeferredBlock<SpiderRingBlock> SPIDER_RING_UP = register("spider_ring_up", () -> new SpiderRingBlock(true));
     public static final DeferredBlock<SpiderRingBlock> SPIDER_RING_DOWN = register("spider_ring_down", () -> new SpiderRingBlock(false));
+
+    public static final DeferredBlock<JumpPadBlock> JUMP_PAD = register("jump_pad", () -> new JumpPadBlock(0xFFFF00, 0.88));//4.5
+    public static final DeferredBlock<JumpPadBlock> BIG_JUMP_PAD = register("big_jump_pad", () -> new JumpPadBlock(0xFF0000, 1.1));//7
+    public static final DeferredBlock<JumpPadBlock> SMALL_JUMP_PAD = register("small_jump_pad", () -> new JumpPadBlock(0xFF00FF, 0.67));//2
+    public static final DeferredBlock<GravityPadBlock> GRAVITY_PAD = register("gravity_pad", () -> new GravityPadBlock(0x00FFFF));
+    public static final DeferredBlock<SpiderPadBlock> SPIDER_PAD = register("spider_pad", () -> new SpiderPadBlock(0x8A2BE2));
 
     public static final DeferredBlock<ModePortalBlock> CUBE_PORTAL = register("cube_portal", () -> new ModePortalBlock(PlayMode.CUBE, PlayMode.CUBE, 0x00FF00));
     public static final DeferredBlock<ModePortalBlock> SHIP_PORTAL = register("ship_portal", () -> new ModePortalBlock(PlayMode.SHIP, PlayMode.JETPACK, 0xFF00FF));

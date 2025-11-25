@@ -1,8 +1,9 @@
-package com.iafenvoy.minedash.trail;
+package com.iafenvoy.minedash.render;
 
 import com.iafenvoy.minedash.MineDash;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 import com.iafenvoy.minedash.registry.MDRenderTypes;
+import com.iafenvoy.minedash.data.TrailData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LightTexture;
@@ -16,20 +17,20 @@ import java.util.List;
 public final class TrailRenderer {
     private static final ResourceLocation TRAIL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "textures/entity/concentrated_trail.png");
 
-    public static void render(TrailHolder effect, GamePlayEntity entity, MultiBufferSource provider, PoseStack matrices) {
+    public static void render(TrailData effect, GamePlayEntity entity, MultiBufferSource provider, PoseStack matrices) {
         Vec3 pos = entity.position();
-        int trailColor = entity.getSecondaryColor() | 0xFF000000;
+        int trailColor = entity.getSecondaryColor() | 0xBF000000;
         effect.tick(pos.add(0, entity.getBbHeight() / 2, 0), pos.subtract(new Vec3(entity.xo, entity.yo, entity.zo)), entity.hasTrail());
-        for (List<TrailHolder.TrailPoint> l : effect.getVerticalPoints())
+        for (List<TrailData.TrailPoint> l : effect.getVerticalPoints())
             renderTrail(l, provider, matrices, trailColor);
-        for (List<TrailHolder.TrailPoint> l : effect.getHorizontalPoints())
+        for (List<TrailData.TrailPoint> l : effect.getHorizontalPoints())
             renderTrail(l, provider, matrices, trailColor);
     }
 
-    private static void renderTrail(List<TrailHolder.TrailPoint> points, MultiBufferSource provider, PoseStack matrices, int color) {
+    private static void renderTrail(List<TrailData.TrailPoint> points, MultiBufferSource provider, PoseStack matrices, int color) {
         VertexConsumer consumer = provider.getBuffer(MDRenderTypes.translucentNoDepth(TRAIL_TEXTURE));
         for (int i = 0; i < points.size() - 1; i++) {
-            TrailHolder.TrailPoint from = points.get(i), to = points.get(i + 1);
+            TrailData.TrailPoint from = points.get(i), to = points.get(i + 1);
             PoseStack.Pose pose = matrices.last();
             int endColor = i == 0 ? color & 0x00FFFFFF : color;
             vertex(consumer, pose, from.upper(), endColor, 0, 0);

@@ -42,11 +42,6 @@ public class SpikeBlock extends AbstractSpikeBlock {
     }
 
     @Override
-    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return Shapes.empty();
-    }
-
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> components, @NotNull TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, components, tooltipFlag);
         components.add(Component.translatable("block.minedash.spike.tooltip"));

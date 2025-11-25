@@ -2,7 +2,9 @@ package com.iafenvoy.minedash.particle;
 
 import com.iafenvoy.minedash.util.MDMath;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -48,17 +50,5 @@ public class LinearCubeParticle extends TextureSheetParticle {
     @Override
     public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-    }
-
-    public static ParticleProvider<CubeParticleOptions> provider(SpriteSet sprite) {
-        return new Provider(sprite);
-    }
-
-    private record Provider(SpriteSet sprite) implements ParticleProvider<CubeParticleOptions> {
-        @Override
-        public @NotNull Particle createParticle(@NotNull CubeParticleOptions options, @NotNull ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            Vec3 end = new Vec3(x, y, z), start = end.add(new Vec3(MDMath.rotationToPosition(options.getRange(), level.random.nextDouble() * Math.PI / 2, level.random.nextDouble() * Math.PI * 2).toVector3f().rotate(options.getDirection().getRotation())));
-            return new LinearCubeParticle(options, level, start, end, this.sprite);
-        }
     }
 }

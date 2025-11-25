@@ -1,23 +1,29 @@
 package com.iafenvoy.minedash.item.block;
 
 import com.iafenvoy.minedash.entity.GamePlayEntity;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.OptionalInt;
 
-public class SpiderRingBlock extends AbstractRingBlock {
+public class SpiderPadBlock extends AbstractPadBlock {
     private static final double CHECK_UNIT = 0.1;
-    private final boolean reverse;
 
-    public SpiderRingBlock(boolean reverse) {
-        this.reverse = reverse;
+    public SpiderPadBlock(int color) {
+        super(color);
     }
 
     @Override
-    public OptionalInt onClick(BlockState state, GamePlayEntity entity) {
-        entity.setReverseGravity(this.reverse, false);
-        int gravityFactor = this.reverse ? 1 : -1;
+    public OptionalInt onCollision(BlockState state, GamePlayEntity entity) {
+        Direction direction = state.getValue(FACING);
+        boolean reverse;
+        if (direction == Direction.UP) reverse = true;
+        else if (direction == Direction.DOWN) reverse = false;
+        else return OptionalInt.empty();
+
+        entity.setReverseGravity(reverse, false);
+        int gravityFactor = reverse ? 1 : -1;
         double y = entity.getY(), unit = CHECK_UNIT * gravityFactor, result = unit;
         while (entity.isInLevel(y + result) && entity.isFree(0, result, 0)) result += unit;
         result -= unit;

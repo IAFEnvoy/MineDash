@@ -3,6 +3,7 @@ package com.iafenvoy.minedash.registry;
 import com.iafenvoy.minedash.particle.CubeParticleProvider;
 import com.iafenvoy.minedash.render.DynamicItemRenderer;
 import com.iafenvoy.minedash.render.block.DefaultBackgroundBlockEntityRenderer;
+import com.iafenvoy.minedash.render.block.PadBlockEntityRenderer;
 import com.iafenvoy.minedash.render.block.RingBlockEntityRenderer;
 import com.iafenvoy.minedash.render.block.SpikeBlockEntityRenderer;
 import com.iafenvoy.minedash.render.entity.GamePlayEntityRenderer;
@@ -33,6 +34,7 @@ public final class MDRenderers {
         event.registerBlockEntityRenderer(MDBlockEntities.DEFAULT_BACKGROUND.get(), ctx -> new DefaultBackgroundBlockEntityRenderer());
         event.registerBlockEntityRenderer(MDBlockEntities.SPIKE.get(), ctx -> new SpikeBlockEntityRenderer());
         event.registerBlockEntityRenderer(MDBlockEntities.RING.get(), RingBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(MDBlockEntities.PAD.get(), ctx -> new PadBlockEntityRenderer());
     }
 
     @SubscribeEvent

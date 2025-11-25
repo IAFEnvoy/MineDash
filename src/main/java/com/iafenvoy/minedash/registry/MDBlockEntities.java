@@ -2,6 +2,7 @@ package com.iafenvoy.minedash.registry;
 
 import com.iafenvoy.minedash.MineDash;
 import com.iafenvoy.minedash.item.block.entity.DefaultBackgroundBlockEntity;
+import com.iafenvoy.minedash.item.block.entity.PadBlockEntity;
 import com.iafenvoy.minedash.item.block.entity.RingBlockEntity;
 import com.iafenvoy.minedash.item.block.entity.SpikeBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -19,6 +20,7 @@ public final class MDBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DefaultBackgroundBlockEntity>> DEFAULT_BACKGROUND = register("default_background", () -> BlockEntityType.Builder.of(DefaultBackgroundBlockEntity::new, MDBlocks.DEFAULT_BACKGROUND.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpikeBlockEntity>> SPIKE = register("spike", () -> BlockEntityType.Builder.of(SpikeBlockEntity::new, MDBlocks.SPIKE.get(), MDBlocks.SMALL_SPIKE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RingBlockEntity>> RING = register("ring", () -> BlockEntityType.Builder.of(RingBlockEntity::new, MDBlocks.JUMP_RING.get(), MDBlocks.BIG_JUMP_RING.get(), MDBlocks.SMALL_JUMP_RING.get(), MDBlocks.DROP_RING.get(), MDBlocks.GRAVITY_RING.get(), MDBlocks.GRAVITY_JUMP_RING.get(), MDBlocks.SPIDER_RING_UP.get(), MDBlocks.SPIDER_RING_DOWN.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PadBlockEntity>> PAD = register("pad", () -> BlockEntityType.Builder.of(PadBlockEntity::new, MDBlocks.JUMP_PAD.get(), MDBlocks.BIG_JUMP_PAD.get(), MDBlocks.SMALL_JUMP_PAD.get(), MDBlocks.GRAVITY_PAD.get(), MDBlocks.SPIDER_PAD.get()).build(null));
 
     public static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String id, Supplier<BlockEntityType<T>> obj) {
         return REGISTRY.register(id, obj);

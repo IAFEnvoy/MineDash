@@ -1,5 +1,6 @@
 package com.iafenvoy.minedash.util;
 
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -34,5 +35,9 @@ public class MDMath {
 
     public static Vec3 lerpVec(float progress, Vec3 from, Vec3 to) {
         return new Vec3(Mth.lerp(progress, from.x, to.x), Mth.lerp(progress, from.y, to.y), Mth.lerp(progress, from.z, to.z));
+    }
+
+    public static Vec3 unitNormal(Direction.Axis axis) {
+        return new Vec3(axis == Direction.Axis.X ? 0 : 1, axis == Direction.Axis.Y ? 0 : 1, axis == Direction.Axis.Z ? 0 : 1);
     }
 }

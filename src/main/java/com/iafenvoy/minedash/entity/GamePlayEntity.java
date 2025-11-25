@@ -5,11 +5,11 @@ import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
 import com.iafenvoy.minedash.data.ControlType;
 import com.iafenvoy.minedash.data.PlayMode;
+import com.iafenvoy.minedash.data.TrailData;
 import com.iafenvoy.minedash.network.GamePlayPacketDistributor;
 import com.iafenvoy.minedash.network.payload.GravityIndicatorS2CPayload;
 import com.iafenvoy.minedash.registry.MDEntityDataSerializers;
 import com.iafenvoy.minedash.registry.MDItems;
-import com.iafenvoy.minedash.trail.TrailHolder;
 import com.iafenvoy.minedash.util.FakeExplosionDamageCalculator;
 import com.iafenvoy.minedash.util.Timeout;
 import net.minecraft.core.BlockPos;
@@ -67,7 +67,7 @@ public class GamePlayEntity extends LivingEntity implements OwnableEntity, Hitbo
     private Direction direction = Direction.SOUTH;
     private int trailTick = 0;
     //Client only cache
-    private final TrailHolder trail = new TrailHolder(0.5f, 40);
+    private final TrailData trailData = new TrailData(0.5f, 40);
 
     public GamePlayEntity(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
@@ -177,7 +177,7 @@ public class GamePlayEntity extends LivingEntity implements OwnableEntity, Hitbo
         super.tick();
         if (!this.isInLevel(this.getY())) this.gameOver();
         this.checkCollisions();
-        this.tickTrail();
+        if (!this.level().isClientSide) this.tickTrail();
         this.updateDirection(Direction.fromYRot(this.getYRot()));
         this.setDeltaMovement(this.calculateHorizontalMovement(this.getDeltaMovement().add(0, this.calculateVerticalMovement(), 0)));
     }
@@ -205,7 +205,7 @@ public class GamePlayEntity extends LivingEntity implements OwnableEntity, Hitbo
                                     this.collidingPos = pos;
                                     this.collidingInteracted = false;
                                     if (provider instanceof Interactable interactable)
-                                        interactable.onCollision(this).ifPresent(this::setTrailTick);
+                                        interactable.onCollision(state, this).ifPresent(this::setTrailTick);
                                 }
                             }
                         }
@@ -242,21 +242,26 @@ public class GamePlayEntity extends LivingEntity implements OwnableEntity, Hitbo
 
     public void tickTrail() {
         if (this.trailTick <= 0) this.setTrail(false);
-        else this.trailTick--;
+        else {
+            this.setTrail(true);
+            this.trailTick--;
+        }
     }
 
     public void setTrailTick(int tick) {
         this.trailTick = tick;
-        this.setTrail(this.trailTick > 0);
     }
 
     public void handleControl(ControlType controlType, boolean pressed) {
         switch (controlType) {
             case JUMP -> {
                 this.jump = pressed;
-                if (pressed && this.collidingPos != null && !this.collidingInteracted && this.level().getBlockState(this.collidingPos).getBlock() instanceof Interactable interactable) {
-                    this.collidingInteracted = true;
-                    interactable.onClick(this).ifPresent(this::setTrailTick);
+                if (pressed && this.collidingPos != null && !this.collidingInteracted) {
+                    BlockState state = this.level().getBlockState(this.collidingPos);
+                    if (state.getBlock() instanceof Interactable interactable) {
+                        this.collidingInteracted = true;
+                        interactable.onClick(state, this).ifPresent(this::setTrailTick);
+                    }
                 }
             }
             case LEFT -> this.left = pressed;
@@ -333,8 +338,8 @@ public class GamePlayEntity extends LivingEntity implements OwnableEntity, Hitbo
         this.entityData.set(TRAIL, trail);
     }
 
-    public TrailHolder getTrail() {
-        return this.trail;
+    public TrailData getTrailData() {
+        return this.trailData;
     }
 
     @Override

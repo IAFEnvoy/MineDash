@@ -83,7 +83,7 @@ public class CubeParticleOptions extends ParticleType<CubeParticleOptions> imple
     }
 
     public enum MovementType implements StringRepresentable {
-        ACCUMULATE, RADIATE;
+        ACCUMULATE, RADIATE, DIRECTIONAL;
         public static final Codec<MovementType> CODEC = StringRepresentable.fromValues(MovementType::values);
         public static final StreamCodec<ByteBuf, MovementType> STREAM_CODEC = ByteBufCodecs.idMapper(i -> MovementType.values()[i], Enum::ordinal);
 

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "minedash:block/jump_pad"
+    }
+  }
+}

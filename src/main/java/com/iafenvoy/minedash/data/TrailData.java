@@ -1,17 +1,18 @@
-package com.iafenvoy.minedash.trail;
+package com.iafenvoy.minedash.data;
 
 import com.iafenvoy.minedash.util.MDMath;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TrailHolder {
+public class TrailData {
     private final PointHolder vertical = new PointHolder(), horizontal = new PointHolder();
     private final float width, maxLength;
 
-    public TrailHolder(float width, int maxLength) {
+    public TrailData(float width, int maxLength) {
         this.width = width;
         this.maxLength = maxLength;
     }
@@ -46,9 +47,9 @@ public class TrailHolder {
         private final List<TrailPoint> actualPoints = new LinkedList<>();
         private final List<List<TrailPoint>> renderPoints = new LinkedList<>();
 
-        public void tick(TrailPoint point) {
+        public void tick(@Nullable TrailPoint point) {
             this.actualPoints.addFirst(point);
-            if (this.actualPoints.size() > TrailHolder.this.maxLength) this.actualPoints.removeLast();
+            if (this.actualPoints.size() > TrailData.this.maxLength) this.actualPoints.removeLast();
             //Spilt segments
             List<List<TrailPoint>> segments = new ArrayList<>();
             List<TrailPoint> cache = new LinkedList<>();
@@ -79,15 +80,15 @@ public class TrailHolder {
                 float distance = (float) from.center().distanceTo(to.center());
                 totalLength += distance;
 
-                if (totalLength > TrailHolder.this.maxLength) {
-                    float ratio = (totalLength - TrailHolder.this.maxLength) / distance;
+                if (totalLength > TrailData.this.maxLength) {
+                    float ratio = (totalLength - TrailData.this.maxLength) / distance;
                     TrailPoint interpolated = this.interpolateTrailPoint(ratio, to, from);
                     List<TrailPoint> trimmed = new ArrayList<>(segment.subList(0, i + 1));
                     trimmed.add(interpolated);
                     segment.clear();
                     segment.addAll(trimmed);
 
-                    totalLength = TrailHolder.this.maxLength;
+                    totalLength = TrailData.this.maxLength;
                     break;
                 }
             }
@@ -98,7 +99,7 @@ public class TrailHolder {
         //Set Width
         private void calculateAndSetPointWidths(List<TrailPoint> segment, float totalLength) {
             float currentLength = 0;
-            float widthRatio = TrailHolder.this.width / totalLength;
+            float widthRatio = TrailData.this.width / totalLength;
             for (int i = 0; i < segment.size() - 1; i++) {
                 TrailPoint from = segment.get(i), to = segment.get(i + 1);
                 float distance = (float) from.center().distanceTo(to.center());

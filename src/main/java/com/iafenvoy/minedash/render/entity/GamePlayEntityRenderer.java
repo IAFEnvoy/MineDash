@@ -4,8 +4,8 @@ import com.iafenvoy.minedash.MineDash;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 import com.iafenvoy.minedash.registry.MDLayerDefinitions;
 import com.iafenvoy.minedash.render.model.GamePlayModel;
-import com.iafenvoy.minedash.trail.TrailHolder;
-import com.iafenvoy.minedash.trail.TrailRenderer;
+import com.iafenvoy.minedash.data.TrailData;
+import com.iafenvoy.minedash.render.TrailRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -27,7 +27,7 @@ public class GamePlayEntityRenderer extends LivingEntityRenderer<GamePlayEntity,
         poseStack.pushPose();
         Vec3 pos = entity.getPosition(partialTicks);
         poseStack.translate(-pos.x, -pos.y, -pos.z);
-        TrailHolder holder = entity.getTrail();
+        TrailData holder = entity.getTrailData();
         TrailRenderer.render(holder, entity, buffer, poseStack);
         poseStack.popPose();
     }
