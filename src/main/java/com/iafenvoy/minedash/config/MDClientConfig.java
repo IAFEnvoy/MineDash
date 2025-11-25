@@ -8,11 +8,12 @@ import com.iafenvoy.minedash.MineDash;
 import net.minecraft.resources.ResourceLocation;
 
 public class MDClientConfig extends AutoInitConfigContainer {
+    private static final String PATH = "./config/%s-client.json".formatted(MineDash.MOD_ID);
     public static final MDClientConfig INSTANCE = new MDClientConfig();
     public final General general = new General();
 
     public MDClientConfig() {
-        super(ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "client"), "screen.%s.client.title".formatted(MineDash.MOD_ID), "./config/%s-client.json".formatted(MineDash.MOD_ID));
+        super(ResourceLocation.fromNamespaceAndPath(MineDash.MOD_ID, "client"), "screen.%s.client.title".formatted(MineDash.MOD_ID), PATH);
     }
 
     private static String format(String category, String jsonKey) {

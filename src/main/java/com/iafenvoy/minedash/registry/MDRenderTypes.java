@@ -53,20 +53,6 @@ public final class MDRenderTypes {
                     .setCullState(RenderStateShard.NO_CULL)
                     .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
                     .createCompositeState(false));
-    private static final Function<ResourceLocation, RenderType> TRANSLUCENT_NO_DEPTH = Util.memoize(location -> RenderType.create("entity_translucent_no_depth",
-            DefaultVertexFormat.NEW_ENTITY,
-            VertexFormat.Mode.QUADS,
-            RenderType.MEGABYTE,
-            true,
-            true,
-            RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
-                    .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
-                    .setOverlayState(RenderStateShard.OVERLAY)
-                    .createCompositeState(true)));
 
     public static RenderType background(ResourceLocation texture) {
         return DEFAULT_BACKGROUND.apply(texture);
@@ -78,9 +64,5 @@ public final class MDRenderTypes {
 
     public static RenderType hitboxOutlineStrip() {
         return HITBOX_OUTLINE_STRIP;
-    }
-
-    public static RenderType translucentNoDepth(ResourceLocation texture) {
-        return TRANSLUCENT_NO_DEPTH.apply(texture);
     }
 }

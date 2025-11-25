@@ -1,6 +1,7 @@
 package com.iafenvoy.minedash.data;
 
 import com.iafenvoy.minedash.util.MDMath;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class TrailData {
-    private final PointHolder vertical = new PointHolder(), horizontal = new PointHolder();
+    private final PointHolder x = new PointHolder(), y = new PointHolder(), z = new PointHolder();
     private final float width, maxLength;
 
     public TrailData(float width, int maxLength) {
@@ -17,28 +18,28 @@ public class TrailData {
         this.maxLength = maxLength;
     }
 
-    public List<List<TrailPoint>> getVerticalPoints() {
-        return this.vertical.renderPoints;
+    public List<List<TrailPoint>> getXTrails() {
+        return this.x.renderPoints;
     }
 
-    public List<List<TrailPoint>> getHorizontalPoints() {
-        return this.horizontal.renderPoints;
+    public List<List<TrailPoint>> getYTrails() {
+        return this.y.renderPoints;
     }
 
-    public void tick(Vec3 pos, Vec3 delta, boolean addPoint) {
+    public List<List<TrailPoint>> getZTrails() {
+        return this.z.renderPoints;
+    }
+
+    public void tick(Vec3 pos, boolean addPoint) {
         if (addPoint) {
-            float yaw = MDMath.positionToYaw(delta);
-            float pitch = MDMath.positionToPitch(delta);
-            Vec3 upper = MDMath.rotationToPosition(pos, this.width / 2f, pitch - 90, yaw);
-            Vec3 lower = MDMath.rotationToPosition(pos, this.width / 2f, pitch + 90, yaw);
-            Vec3 offset = upper.subtract(lower).cross(delta).normalize().scale(this.width / 2);
-            Vec3 upper1 = pos.add(offset);
-            Vec3 lower1 = pos.add(offset.scale(-1));
-            this.vertical.tick(new TrailPoint(upper, lower));
-            this.horizontal.tick(new TrailPoint(upper1, lower1));
+            float unit = this.width / 2 / Mth.SQRT_OF_TWO;
+            this.x.tick(new TrailPoint(pos.subtract(unit, 0, 0), pos.add(unit, 0, 0)));
+            this.y.tick(new TrailPoint(pos.subtract(0, unit, 0), pos.add(0, unit, 0)));
+            this.z.tick(new TrailPoint(pos.subtract(0, 0, unit), pos.add(0, 0, unit)));
         } else {
-            this.vertical.tick(null);
-            this.horizontal.tick(null);
+            this.x.tick(null);
+            this.y.tick(null);
+            this.z.tick(null);
         }
     }
 

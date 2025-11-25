@@ -13,7 +13,13 @@ public class GravityPadBlock extends AbstractPadBlock {
 
     @Override
     public OptionalInt onCollision(BlockState state, GamePlayEntity entity) {
-        entity.reverseGravity(true);
+        Direction direction = state.getValue(FACING);
+        boolean reverse;
+        if (direction == Direction.UP) reverse = true;
+        else if (direction == Direction.DOWN) reverse = false;
+        else return OptionalInt.empty();
+        if (reverse == entity.isReverseGravity()) return OptionalInt.empty();
+        entity.setReverseGravity(reverse, true);
         entity.setDeltaMovement(entity.getDeltaMovement().with(Direction.Axis.Y, -0.33 * entity.gravityFactor()));
         return OptionalInt.of(TICK);
     }
