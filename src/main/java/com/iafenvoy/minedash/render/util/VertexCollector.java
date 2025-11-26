@@ -1,4 +1,4 @@
-package com.iafenvoy.minedash.render;
+package com.iafenvoy.minedash.render.util;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

@@ -1,7 +1,6 @@
 package com.iafenvoy.minedash.render.item;
 
 import com.iafenvoy.minedash.registry.MDDataComponents;
-import com.iafenvoy.minedash.render.DynamicItemRenderer;
 import com.iafenvoy.minedash.render.model.LayerModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

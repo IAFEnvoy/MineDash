@@ -1,6 +1,6 @@
 package com.iafenvoy.minedash.mixin;
 
-import com.iafenvoy.minedash.render.DynamicItemRenderer;
+import com.iafenvoy.minedash.render.item.DynamicItemRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;

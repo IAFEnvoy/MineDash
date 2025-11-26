@@ -1,11 +1,11 @@
 package com.iafenvoy.minedash.render.entity;
 
 import com.iafenvoy.minedash.MineDash;
+import com.iafenvoy.minedash.data.TrailData;
 import com.iafenvoy.minedash.entity.GamePlayEntity;
 import com.iafenvoy.minedash.registry.MDLayerDefinitions;
-import com.iafenvoy.minedash.render.model.GamePlayModel;
-import com.iafenvoy.minedash.data.TrailData;
 import com.iafenvoy.minedash.render.TrailRenderer;
+import com.iafenvoy.minedash.render.model.GamePlayModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

@@ -22,7 +22,7 @@ public class MDClientConfig extends AutoInitConfigContainer {
 
     public static class General extends AutoInitConfigCategoryBase {
         public final IConfigEntry<Boolean> showHitboxes = new BooleanEntry(format("general", "showHitboxes"), false).json("showHitboxes");
-        public final IConfigEntry<Integer> hitboxDisplayRange = new IntegerEntry(format("general", "hitboxDisplayRange"), 5, 1, 32).json("hitboxDisplayRange");
+        public final IConfigEntry<Integer> hitboxDisplayRange = new IntegerEntry(format("general", "hitboxDisplayRange"), 4, 1, 64).json("hitboxDisplayRange");
 
         public General() {
             super("general", "category.%s.general".formatted(MineDash.MOD_ID));

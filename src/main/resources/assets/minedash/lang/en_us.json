@@ -29,7 +29,7 @@
   "block.minedash.wave_portal": "(WIP) Wave Portal",
   "category.minedash.general": "General",
   "category.minedash.main": "MineDash",
-  "config.minedash.general.hitboxDisplayRange": "Hitbox Display Range (Chunks)",
+  "config.minedash.general.hitboxDisplayRange": "Hitbox Display Range (Chunk)",
   "config.minedash.general.showHitboxes": "Show Hitboxes",
   "entity.minedash.game_play": "Game Play",
   "item.minedash.delete_stick": "Delete Stick",

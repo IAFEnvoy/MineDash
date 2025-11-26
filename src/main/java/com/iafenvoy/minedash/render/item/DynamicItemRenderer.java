@@ -1,4 +1,4 @@
-package com.iafenvoy.minedash.render;
+package com.iafenvoy.minedash.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;

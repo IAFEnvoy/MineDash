@@ -3,27 +3,23 @@ package com.iafenvoy.minedash.item.block;
 import com.google.common.collect.ImmutableMap;
 import com.iafenvoy.minedash.api.HitboxType;
 import com.iafenvoy.minedash.api.Interactable;
-import com.iafenvoy.minedash.item.block.entity.PadBlockEntity;
 import com.iafenvoy.minedash.particle.CubeParticleOptions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class AbstractPadBlock extends FacingBlock implements EntityBlock, Interactable {
+public class AbstractPadBlock extends FacingBlock implements Interactable {
     private static final Map<Direction, VoxelShape> HITBOXES = ImmutableMap.<Direction, VoxelShape>builder()
             .put(Direction.UP, box(0, 0, 0, 16, 2, 16))
             .put(Direction.DOWN, box(0, 14, 0, 16, 16, 16))
@@ -47,11 +43,6 @@ public class AbstractPadBlock extends FacingBlock implements EntityBlock, Intera
     @Override
     public @NotNull VoxelShape getHitbox(@NotNull BlockState state) {
         return HITBOXES.get(state.getValue(FACING));
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new PadBlockEntity(pos, state);
     }
 
     @Override
