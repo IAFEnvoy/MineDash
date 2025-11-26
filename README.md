@@ -1,6 +1,6 @@
 # MineDash
 
-This mod add contents from Geometry Dash.
+This mod add contents from [Geometry Dash](https://www.youtube.com/RobTopGames/).
 
 <div align=center><img src="https://raw.githubusercontent.com/IAFEnvoy/MineDash/refs/heads/master/img/1.webp" style="width:400px;text-align:center;" alt=""></img></div>
 
@@ -35,7 +35,7 @@ Only `Jupiter` is needed.
 ### Will `xxx` features be added?
 
 Some features have planned to add. Other features you can suggest but not all of them will be added such as more
-gravity direction. ~~Go to play GD directly is a better idea.~~
+gravity directions or specific triggers. ~~Go to play GD directly is a better idea.~~
 
 ## Discord
 
