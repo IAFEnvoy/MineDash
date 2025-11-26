@@ -1,10 +1,13 @@
 package com.iafenvoy.minedash.render;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@OnlyIn(Dist.CLIENT)
 public final class VertexCollector {
     private final List<Vector3f> vertexes = new LinkedList<>();
 

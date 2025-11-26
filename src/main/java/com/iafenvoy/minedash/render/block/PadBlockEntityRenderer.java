@@ -9,11 +9,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import static com.iafenvoy.minedash.render.VertexHelper.vertex;
 import static com.iafenvoy.minedash.render.VertexHelper.vertexWhite;
 
+@OnlyIn(Dist.CLIENT)
 public class PadBlockEntityRenderer implements BlockEntityRenderer<PadBlockEntity> {
     private static final VertexCollector VERTEXES = new VertexCollector();
 

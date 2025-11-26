@@ -12,9 +12,12 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
+@OnlyIn(Dist.CLIENT)
 public class RingBlockEntityRenderer implements BlockEntityRenderer<RingBlockEntity> {
     private final ItemRenderer itemRenderer;
 

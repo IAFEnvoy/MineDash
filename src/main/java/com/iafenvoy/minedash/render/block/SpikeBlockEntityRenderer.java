@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -18,6 +20,7 @@ import java.util.function.Function;
 import static com.iafenvoy.minedash.render.VertexHelper.vertexBlack;
 import static com.iafenvoy.minedash.render.VertexHelper.vertexWhite;
 
+@OnlyIn(Dist.CLIENT)
 public class SpikeBlockEntityRenderer implements BlockEntityRenderer<SpikeBlockEntity> {
     private static final Function<Float, VertexCollector> VERTEXES = Util.memoize(height -> {
         VertexCollector collector = new VertexCollector();

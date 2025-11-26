@@ -1,10 +1,13 @@
 package com.iafenvoy.minedash.render;
 
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
+@OnlyIn(Dist.CLIENT)
 public final class ThemeColorManager {
     public static final ThemeColorManager INSTANCE = new ThemeColorManager(1, 1, 1);
 
