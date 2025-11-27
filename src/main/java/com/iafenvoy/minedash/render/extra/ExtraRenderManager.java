@@ -28,6 +28,7 @@ import java.util.Set;
 public final class ExtraRenderManager {
     private static final Multimap<Block, ExtraBlockRenderer> BLOCK_RENDERERS = HashMultimap.create();
     private static final Multimap<EntityType<?>, ExtraEntityRenderer> ENTITY_RENDERERS = LinkedHashMultimap.create();
+    private static final MultiBufferSource.BufferSource BUFFER_SOURCE = Minecraft.getInstance().renderBuffers().bufferSource();
 
     public static void register(Block block, ExtraBlockRenderer renderer) {
         BLOCK_RENDERERS.put(block, renderer);
@@ -38,10 +39,9 @@ public final class ExtraRenderManager {
     }
 
     public static void renderSingleBlock(BlockState state, PoseStack poseStack) {
-        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
         for (ExtraBlockRenderer renderer : BLOCK_RENDERERS.get(state.getBlock()))
-            renderer.render(state, partialTicks, poseStack, bufferSource);
+            renderer.render(state, partialTicks, poseStack, BUFFER_SOURCE);
     }
 
     static Set<Block> getRequiredBlock() {
@@ -51,7 +51,6 @@ public final class ExtraRenderManager {
     public static void renderBlockExtra(PoseStack poseStack, Camera camera, DeltaTracker deltaTracker) {
         LocalPlayer player = Minecraft.getInstance().player;
         assert player != null;
-        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         poseStack.pushPose();
         prepareCamera(poseStack, camera);
         float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(true);
@@ -61,7 +60,8 @@ public final class ExtraRenderManager {
             if (renderers.isEmpty()) continue;
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            for (ExtraBlockRenderer renderer : renderers) renderer.render(state, partialTicks, poseStack, bufferSource);
+            for (ExtraBlockRenderer renderer : renderers)
+                renderer.render(state, partialTicks, poseStack, BUFFER_SOURCE);
             poseStack.popPose();
         }
         poseStack.popPose();
@@ -70,14 +70,13 @@ public final class ExtraRenderManager {
     public static void renderEntityExtra(PoseStack poseStack, Camera camera, DeltaTracker deltaTracker) {
         LocalPlayer player = Minecraft.getInstance().player;
         assert player != null;
-        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         poseStack.pushPose();
         prepareCamera(poseStack, camera);
         int range = MDClientConfig.INSTANCE.general.hitboxDisplayRange.getValue() * 16;
         for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(range, range, range))) {
             float partialTick = wrapPartialTick(deltaTracker, entity);
             for (ExtraEntityRenderer renderer : ENTITY_RENDERERS.get(entity.getType()))
-                renderer.render(entity, partialTick, poseStack, bufferSource);
+                renderer.render(entity, partialTick, poseStack, BUFFER_SOURCE);
         }
         poseStack.popPose();
     }

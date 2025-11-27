@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public final class MDItems {
     public static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(MineDash.MOD_ID);
 

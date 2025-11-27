@@ -8,11 +8,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 
 import java.util.OptionalDouble;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public final class MDRenderTypes {
     private static final Function<ResourceLocation, RenderType> DEFAULT_BACKGROUND = Util.memoize(texture -> RenderType.create("default_background",
             DefaultVertexFormat.POSITION_COLOR,
@@ -64,5 +68,11 @@ public final class MDRenderTypes {
 
     public static RenderType hitboxOutlineStrip() {
         return HITBOX_OUTLINE_STRIP;
+    }
+
+    @SubscribeEvent
+    public static void registerRenderTypes(RegisterRenderBuffersEvent event) {
+        event.registerRenderBuffer(HITBOX_OUTLINE);
+        event.registerRenderBuffer(HITBOX_OUTLINE_STRIP);
     }
 }
