@@ -9,7 +9,8 @@
   "client": [
     "BlockEntityWithoutLevelRendererMixin",
     "LevelMixin",
-    "LibraryMixin"
+    "LibraryMixin",
+    "ModelBlockRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

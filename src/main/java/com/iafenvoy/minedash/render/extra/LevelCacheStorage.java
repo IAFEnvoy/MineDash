@@ -10,9 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.level.ChunkEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,14 +18,11 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(Dist.CLIENT)
 public final class LevelCacheStorage {
     private static final Map<ChunkPos, List<BlockPos>> CHUNK_DATA = new CopyOnWriteHashMap<>();
     private static final Supplier<Set<Block>> NEEDED_BLOCK = Suppliers.memoize(ExtraRenderManager::getRequiredBlock);
 
-    @SubscribeEvent
-    public static void onChunkData(ChunkEvent.Load event) {
-        ChunkAccess chunk = event.getChunk();
+    public static void onChunkLoad(ChunkAccess chunk) {
         ChunkPos chunkPos = chunk.getPos();
         Set<Block> needed = NEEDED_BLOCK.get();
         List<BlockPos> posList = new LinkedList<>();
@@ -42,9 +36,8 @@ public final class LevelCacheStorage {
         CHUNK_DATA.put(chunkPos, posList);
     }
 
-    @SubscribeEvent
-    public static void onChunkUnload(ChunkEvent.Unload event) {
-        CHUNK_DATA.remove(event.getChunk().getPos());
+    public static void onChunkUnload(ChunkAccess chunk) {
+        CHUNK_DATA.remove(chunk.getPos());
     }
 
     public static void onBlockUpdate(BlockPos pos, BlockState newState) {

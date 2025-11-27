@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.minedash.config.MDClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,16 +19,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
 import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(Dist.CLIENT)
 public final class ExtraRenderManager {
     private static final int RANGE = 64;
     private static final Multimap<Block, ExtraBlockRenderer> BLOCK_RENDERERS = HashMultimap.create();
@@ -41,25 +37,24 @@ public final class ExtraRenderManager {
         ENTITY_RENDERERS.put(entityType, renderer);
     }
 
+    public static void renderSingleBlock(BlockState state, PoseStack poseStack) {
+        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        for (ExtraBlockRenderer renderer : BLOCK_RENDERERS.get(state.getBlock()))
+            renderer.render(state, partialTicks, poseStack, bufferSource);
+    }
+
     static Set<Block> getRequiredBlock() {
         return BLOCK_RENDERERS.keySet();
     }
 
-    @ApiStatus.Internal
-    @SubscribeEvent
-    public static void renderHitBoxes(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
-        //Prepare base fields
+    public static void renderBlockExtra(PoseStack poseStack, Camera camera, DeltaTracker deltaTracker) {
         LocalPlayer player = Minecraft.getInstance().player;
         assert player != null;
         MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        //Prepare Camera
-        PoseStack poseStack = event.getPoseStack();
         poseStack.pushPose();
-        Vec3 cameraPos = event.getCamera().getPosition();
-        poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        //Block
-        float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(true);
+        prepareCamera(poseStack, camera);
+        float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(true);
         for (BlockPos pos : LevelCacheStorage.collectForRender(player.chunkPosition(), MDClientConfig.INSTANCE.general.hitboxDisplayRange.getValue())) {
             BlockState state = player.level().getBlockState(pos);
             Collection<ExtraBlockRenderer> renderers = BLOCK_RENDERERS.get(state.getBlock());
@@ -69,14 +64,26 @@ public final class ExtraRenderManager {
             for (ExtraBlockRenderer renderer : renderers) renderer.render(state, partialTicks, poseStack, bufferSource);
             poseStack.popPose();
         }
-        //Entity
+        poseStack.popPose();
+    }
+
+    public static void renderEntityExtra(PoseStack poseStack, Camera camera, DeltaTracker deltaTracker) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        assert player != null;
+        MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        poseStack.pushPose();
+        prepareCamera(poseStack, camera);
         for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(RANGE, RANGE, RANGE))) {
-            float partialTick = wrapPartialTick(event.getPartialTick(), entity);
+            float partialTick = wrapPartialTick(deltaTracker, entity);
             for (ExtraEntityRenderer renderer : ENTITY_RENDERERS.get(entity.getType()))
                 renderer.render(entity, partialTick, poseStack, bufferSource);
         }
-        //End
         poseStack.popPose();
+    }
+
+    private static void prepareCamera(PoseStack poseStack, Camera camera) {
+        Vec3 cameraPos = camera.getPosition();
+        poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
     }
 
     private static float wrapPartialTick(DeltaTracker tracker, Entity entity) {

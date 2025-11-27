@@ -1,5 +1,6 @@
-package com.iafenvoy.minedash.render.extra;
+package com.iafenvoy.minedash.render.extra.block;
 
+import com.iafenvoy.minedash.render.extra.ExtraBlockRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;

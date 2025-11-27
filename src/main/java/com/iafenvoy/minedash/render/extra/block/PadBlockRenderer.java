@@ -1,6 +1,7 @@
-package com.iafenvoy.minedash.render.extra;
+package com.iafenvoy.minedash.render.extra.block;
 
 import com.iafenvoy.minedash.item.block.AbstractPadBlock;
+import com.iafenvoy.minedash.render.extra.ExtraBlockRenderer;
 import com.iafenvoy.minedash.render.util.VertexCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -13,7 +14,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import static com.iafenvoy.minedash.render.util.VertexHelper.vertex;
-import static com.iafenvoy.minedash.render.util.VertexHelper.vertexWhite;
 
 @OnlyIn(Dist.CLIENT)
 public class PadBlockRenderer implements ExtraBlockRenderer {
@@ -33,11 +33,11 @@ public class PadBlockRenderer implements ExtraBlockRenderer {
         VERTEXES.forEach((x, y, z) -> vertex(consumer1, pose, x, y, z, color));
         //Borders
         VertexConsumer consumer2 = bufferSource.getBuffer(RenderType.lineStrip());
-        vertexWhite(consumer2, pose, 0, 0, 0);
-        vertexWhite(consumer2, pose, 1, 0, 0);
-        vertexWhite(consumer2, pose, 1, 0, 1);
-        vertexWhite(consumer2, pose, 0, 0, 1);
-        vertexWhite(consumer2, pose, 0, 0, 0);
+        vertex(consumer2, pose, (float) 0, (float) 0, (float) 0, 0xFFFFFFFF);
+        vertex(consumer2, pose, (float) 1, (float) 0, (float) 0, 0xFFFFFFFF);
+        vertex(consumer2, pose, (float) 1, (float) 0, (float) 1, 0xFFFFFFFF);
+        vertex(consumer2, pose, (float) 0, (float) 0, (float) 1, 0xFFFFFFFF);
+        vertex(consumer2, pose, (float) 0, (float) 0, (float) 0, 0xFFFFFFFF);
         poseStack.popPose();
     }
 
