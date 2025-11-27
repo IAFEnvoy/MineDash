@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-public class MDParticles {
+public final class MDParticles {
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(Registries.PARTICLE_TYPE, MineDash.MOD_ID);
 
     public static final DeferredHolder<ParticleType<?>, CubeParticleOptions> CUBE = register("cube", () -> new CubeParticleOptions(CubeParticleOptions.MovementType.ACCUMULATE, 0xFFFFFFFF, 1, 1, Direction.UP));

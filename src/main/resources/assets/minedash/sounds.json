@@ -1,0 +1,60 @@
+{
+  "difficulty/na": {
+    "sounds": [
+      "minedash:difficulty/na"
+    ]
+  },
+  "difficulty/auto": {
+    "sounds": [
+      "minedash:difficulty/auto"
+    ]
+  },
+  "difficulty/easy": {
+    "sounds": [
+      "minedash:difficulty/easy"
+    ]
+  },
+  "difficulty/normal": {
+    "sounds": [
+      "minedash:difficulty/normal"
+    ]
+  },
+  "difficulty/hard": {
+    "sounds": [
+      "minedash:difficulty/hard"
+    ]
+  },
+  "difficulty/harder": {
+    "sounds": [
+      "minedash:difficulty/harder"
+    ]
+  },
+  "difficulty/insane": {
+    "sounds": [
+      "minedash:difficulty/insane"
+    ]
+  },
+  "difficulty/easy_demon": {
+    "sounds": [
+      "minedash:difficulty/easy_demon"
+    ]
+  },
+  "difficulty/medium_demon": {
+    "sounds": [
+      "minedash:difficulty/medium_demon"
+    ]
+  },
+  "difficulty/hard_demon": {
+    "sounds": [
+    ]
+  },
+  "difficulty/insane_demon": {
+    "sounds": [
+    ]
+  },
+  "difficulty/extreme_demon": {
+    "sounds": [
+      "minedash:difficulty/extreme_demon"
+    ]
+  }
+}

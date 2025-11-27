@@ -1,0 +1,6 @@
+{
+	"parent": "minedash:custom/difficulty_face",
+	"textures": {
+		"layer0": "minedash:item/difficulty/insane"
+	}
+}

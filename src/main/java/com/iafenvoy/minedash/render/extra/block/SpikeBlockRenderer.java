@@ -49,7 +49,7 @@ public class SpikeBlockRenderer implements ExtraBlockRenderer {
         VertexCollector collector = VERTEXES.apply(state.getBlock() instanceof Spike spike ? spike.getHeight() : 1f);
         //Quads
         VertexConsumer consumer1 = bufferSource.getBuffer(RenderType.debugFilledBox());
-        collector.forEach((x, y, z) -> vertex(consumer1, pose, x, y, z, 0xFF000000));
+        collector.forEach((x, y, z) -> vertex(consumer1, pose, x, y, z, y > 0 ? 0xFF000000 : 0x7F000000));
         //Borders
         VertexConsumer consumer2 = bufferSource.getBuffer(RenderType.lineStrip());
         collector.forEach((x, y, z) -> vertex(consumer2, pose, x, y, z, 0xFFFFFFFF));

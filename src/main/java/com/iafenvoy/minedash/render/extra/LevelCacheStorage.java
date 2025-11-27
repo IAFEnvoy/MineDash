@@ -1,6 +1,5 @@
 package com.iafenvoy.minedash.render.extra;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.iafenvoy.minedash.util.CopyOnWriteHashMap;
 import net.minecraft.core.BlockPos;
@@ -20,11 +19,11 @@ import java.util.function.Supplier;
 @OnlyIn(Dist.CLIENT)
 public final class LevelCacheStorage {
     private static final Map<ChunkPos, List<BlockPos>> CHUNK_DATA = new CopyOnWriteHashMap<>();
-    private static final Supplier<Set<Block>> NEEDED_BLOCK = Suppliers.memoize(ExtraRenderManager::getRequiredBlock);
+    private static final Supplier<Set<Block>> NEEDED_BLOCKS = ExtraRenderManager::getRequiredBlock;
 
     public static void onChunkLoad(ChunkAccess chunk) {
         ChunkPos chunkPos = chunk.getPos();
-        Set<Block> needed = NEEDED_BLOCK.get();
+        Set<Block> needed = NEEDED_BLOCKS.get();
         List<BlockPos> posList = new LinkedList<>();
         for (int x = 0; x < 16; x++)
             for (int z = 0; z < 16; z++)
@@ -44,7 +43,7 @@ public final class LevelCacheStorage {
         List<BlockPos> posList = CHUNK_DATA.get(new ChunkPos(pos));
         if (posList == null) return;
         posList.remove(pos);
-        if (NEEDED_BLOCK.get().contains(newState.getBlock())) posList.add(pos);
+        if (NEEDED_BLOCKS.get().contains(newState.getBlock())) posList.add(pos);
     }
 
     public static List<BlockPos> collectForRender(ChunkPos pos, int chunkRange) {

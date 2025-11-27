@@ -1,6 +1,7 @@
 package com.iafenvoy.minedash.render.extra;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.iafenvoy.minedash.config.MDClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,9 +26,8 @@ import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public final class ExtraRenderManager {
-    private static final int RANGE = 64;
     private static final Multimap<Block, ExtraBlockRenderer> BLOCK_RENDERERS = HashMultimap.create();
-    private static final Multimap<EntityType<?>, ExtraEntityRenderer> ENTITY_RENDERERS = HashMultimap.create();
+    private static final Multimap<EntityType<?>, ExtraEntityRenderer> ENTITY_RENDERERS = LinkedHashMultimap.create();
 
     public static void register(Block block, ExtraBlockRenderer renderer) {
         BLOCK_RENDERERS.put(block, renderer);
@@ -73,7 +73,8 @@ public final class ExtraRenderManager {
         MultiBufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         poseStack.pushPose();
         prepareCamera(poseStack, camera);
-        for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(RANGE, RANGE, RANGE))) {
+        int range = MDClientConfig.INSTANCE.general.hitboxDisplayRange.getValue() * 16;
+        for (Entity entity : player.level().getEntities(player, new AABB(player.blockPosition()).inflate(range, range, range))) {
             float partialTick = wrapPartialTick(deltaTracker, entity);
             for (ExtraEntityRenderer renderer : ENTITY_RENDERERS.get(entity.getType()))
                 renderer.render(entity, partialTick, poseStack, bufferSource);
